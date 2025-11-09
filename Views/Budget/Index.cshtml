@@ -1,0 +1,741 @@
+@model IEnumerable<SmartExpenseTracker.Models.Budget>
+
+@{
+    ViewData["Title"] = "Budget Management";
+}
+
+<style>
+    .budget-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+    }
+
+    .stats-summary {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 2px solid #f8f9fa;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        height: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border-color: #667eea;
+    }
+
+    .stat-card.total-budget {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-color: #2196f3;
+    }
+
+    .stat-card.total-spent {
+        background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%);
+        border-color: #ff9800;
+    }
+
+    .stat-card.remaining {
+        background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+        border-color: #4caf50;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        opacity: 0.8;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .budget-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .budget-card {
+        background: white;
+        border-radius: 20px;
+        padding: 0;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 2px solid #f8f9fa;
+        overflow: hidden;
+        height: fit-content;
+    }
+
+    .budget-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        border-color: #667eea;
+    }
+
+    .budget-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+        border-bottom: 2px solid #f1f3f4;
+    }
+
+    .budget-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .budget-title i {
+        color: #667eea;
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    .budget-category {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: white;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .budget-category i {
+        margin-right: 0.5rem;
+    }
+
+    .budget-body {
+        padding: 1.5rem;
+    }
+
+    .budget-description {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-radius: 10px;
+        border-left: 4px solid #ffc107;
+    }
+
+    .budget-amount-display {
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        border: 2px solid #c3e6cb;
+    }
+
+    .budget-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #28a745;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+
+    .budget-amount-label {
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+    }
+
+    .progress-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .progress-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .progress-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .progress-percentage {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: white;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .progress-bar-container {
+        background: #f8f9fa;
+        border-radius: 15px;
+        height: 12px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        border-radius: 15px;
+        transition: width 0.8s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%);
+        background-size: 20px 20px;
+        animation: progress-animation 1s linear infinite;
+    }
+
+    @@keyframes progress-animation {
+        0% { background-position: 0 0; }
+        100% { background-position: 20px 0; }
+    }
+
+    .progress-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+    .progress-warning {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    }
+
+    .progress-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+    }
+
+    .budget-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .budget-stat {
+        text-align: center;
+        padding: 1rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        border: 2px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+    .budget-stat:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .budget-stat-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .budget-stat-label {
+        color: #6c757d;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .budget-stat.budget-amount-stat .budget-stat-value {
+        color: #2196f3;
+    }
+
+    .budget-stat.spent-amount-stat .budget-stat-value {
+        color: #ff9800;
+    }
+
+    .budget-stat.remaining-amount-stat .budget-stat-value {
+        color: #4caf50;
+    }
+
+    .budget-timeline {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #667eea;
+    }
+
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .timeline-item i {
+        color: #667eea;
+        margin-right: 0.75rem;
+        width: 20px;
+    }
+
+    .timeline-label {
+        font-weight: 600;
+        color: #495057;
+        margin-right: 0.5rem;
+        min-width: 60px;
+        font-size: 0.9rem;
+    }
+
+    .timeline-value {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .budget-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: white;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    }
+
+    .budget-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+
+    .action-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .action-btn i {
+        margin-right: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .btn-details {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 2px solid #f8f9fa;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #667eea;
+        margin-bottom: 2rem;
+        opacity: 0.8;
+    }
+
+    .empty-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #495057;
+        margin-bottom: 1rem;
+    }
+
+    .empty-description {
+        color: #6c757d;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-create-first {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 15px;
+        padding: 1rem 2rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-create-first:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-create-first i {
+        margin-right: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .btn-create-new {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-create-new:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-create-new i {
+        margin-right: 0.5rem;
+    }
+
+    .budget-id {
+        font-size: 1.2rem;
+        opacity: 0.8;
+        font-weight: 500;
+    }
+
+    @@media (max-width: 768px) {
+        .budget-hero {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stats-summary {
+            padding: 1.5rem;
+        }
+
+        .budget-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .budget-header, .budget-body {
+            padding: 1rem;
+        }
+
+        .budget-amount {
+            font-size: 2rem;
+        }
+
+        .budget-stats {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .budget-actions {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .empty-state {
+            padding: 3rem 1.5rem;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Hero Section -->
+    <div class="budget-hero">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">
+                    <i class="fas fa-chart-pie me-3"></i>Budget Management
+                </h1>
+                <p class="mb-0 budget-id">Track and manage your spending limits</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a asp-action="Create" class="btn-create-new">
+                    <i class="fas fa-plus"></i>Create New Budget
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 15px; border: none; box-shadow: 0 10px 25px rgba(40, 167, 69, 0.2) !important;">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Statistics Summary -->
+    <div class="stats-summary">
+        <h4 class="mb-4 fw-bold" style="color: #667eea;">
+            <i class="fas fa-chart-bar me-2"></i>Budget Overview
+        </h4>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="stat-card total-budget">
+                    <i class="fas fa-wallet stat-icon" style="color: #2196f3;"></i>
+                    <div class="stat-value" style="color: #2196f3;">£@(ViewBag.TotalBudget?.ToString("N2") ?? "0.00")</div>
+                    <div class="stat-label">Total Budget</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="stat-card total-spent">
+                    <i class="fas fa-credit-card stat-icon" style="color: #ff9800;"></i>
+                    <div class="stat-value" style="color: #ff9800;">£@(ViewBag.TotalSpent?.ToString("N2") ?? "0.00")</div>
+                    <div class="stat-label">Total Spent</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="stat-card remaining">
+                    <i class="fas fa-piggy-bank stat-icon" style="color: #4caf50;"></i>
+                    <div class="stat-value" style="color: #4caf50;">£@(((ViewBag.TotalBudget ?? 0) - (ViewBag.TotalSpent ?? 0)).ToString("N2"))</div>
+                    <div class="stat-label">Remaining</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Cards -->
+    @if (Model.Any())
+    {
+        <div class="budget-grid">
+            @foreach (var budget in Model)
+            {
+                var progressPercentage = budget.PercentageUsed;
+                var progressClass = progressPercentage >= 90 ? "progress-danger" : 
+                                   progressPercentage >= 75 ? "progress-warning" : "progress-success";
+                var badgeClass = progressPercentage >= 90 ? "bg-danger" : 
+                                progressPercentage >= 75 ? "bg-warning" : "bg-success";
+                
+                <div class="budget-card">
+                    <div class="budget-header">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="budget-title">
+                                <i class="fas fa-bullseye"></i>@budget.Name
+                            </div>
+                        </div>
+                        @if (budget.Category != null)
+                        {
+                            <div class="budget-category" style="background: linear-gradient(135deg, @budget.Category.Color 0%, @budget.Category.Color 100%);">
+                                @if (!string.IsNullOrEmpty(budget.Category.Icon))
+                                {
+                                    <i class="@budget.Category.Icon"></i>
+                                }
+                                @budget.Category.Name
+                            </div>
+                        }
+                    </div>
+                    <div class="budget-body">
+                        @if (!string.IsNullOrEmpty(budget.Description))
+                        {
+                            <div class="budget-description">
+                                <i class="fas fa-comment me-2" style="color: #856404;"></i>@budget.Description
+                            </div>
+                        }
+                        
+                        <!-- Amount Display -->
+                        <div class="budget-amount-display">
+                            <div class="budget-amount">
+                                <i class="fas fa-pound-sign"></i>@budget.Amount.ToString("N0")
+                            </div>
+                            <div class="budget-amount-label">Budget Limit</div>
+                        </div>
+
+                        <!-- Progress Section -->
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">
+                                    <i class="fas fa-chart-line me-1"></i>Progress
+                                </span>
+                                <span class="progress-percentage @badgeClass">@progressPercentage.ToString("F1")%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill @progressClass" style="width: @Math.Min(progressPercentage, 100)%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Budget Statistics -->
+                        <div class="budget-stats">
+                            <div class="budget-stat budget-amount-stat">
+                                <div class="budget-stat-value">£@budget.Amount.ToString("N0")</div>
+                                <div class="budget-stat-label">Budget</div>
+                            </div>
+                            <div class="budget-stat spent-amount-stat">
+                                <div class="budget-stat-value">£@budget.SpentAmount.ToString("N0")</div>
+                                <div class="budget-stat-label">Spent</div>
+                            </div>
+                            <div class="budget-stat remaining-amount-stat">
+                                <div class="budget-stat-value">£@budget.RemainingAmount.ToString("N0")</div>
+                                <div class="budget-stat-label">Remaining</div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="budget-timeline">
+                            <div class="timeline-item">
+                                <i class="fas fa-play-circle"></i>
+                                <span class="timeline-label">Start:</span>
+                                <span class="timeline-value">@budget.StartDate.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <div class="timeline-item">
+                                <i class="fas fa-stop-circle"></i>
+                                <span class="timeline-label">End:</span>
+                                <span class="timeline-value">@budget.EndDate.ToString("MMM dd, yyyy")</span>
+                            </div>
+                        </div>
+
+                        <!-- Status and Actions -->
+                        <div class="budget-status">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-2" style="color: #667eea;"></i>
+                                <span style="color: #495057; font-weight: 600;">Status:</span>
+                            </div>
+                            @if (budget.IsActive)
+                            {
+                                <span class="status-badge status-active">
+                                    <i class="fas fa-check-circle me-1"></i>Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-inactive">
+                                    <i class="fas fa-pause-circle me-1"></i>Inactive
+                                </span>
+                            }
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="budget-actions">
+                            <a asp-action="Details" asp-route-id="@budget.Id" class="action-btn btn-details">
+                                <i class="fas fa-eye"></i>Details
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@budget.Id" class="action-btn btn-edit">
+                                <i class="fas fa-edit"></i>Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@budget.Id" class="action-btn btn-delete">
+                                <i class="fas fa-trash"></i>Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-chart-pie empty-icon"></i>
+            <h4 class="empty-title">No Budgets Created Yet</h4>
+            <p class="empty-description">
+                Start managing your finances by creating your first budget. Set spending limits for different categories and track your progress to achieve your financial goals.
+            </p>
+            <a asp-action="Create" class="btn-create-first">
+                <i class="fas fa-plus"></i>Create Your First Budget
+            </a>
+        </div>
+    }
+</div>

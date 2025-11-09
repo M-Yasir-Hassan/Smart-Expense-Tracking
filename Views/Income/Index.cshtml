@@ -1,0 +1,405 @@
+@model IEnumerable<SmartExpenseTracker.Models.Income>
+
+@{
+    ViewData["Title"] = "Income";
+}
+
+<style>
+    .income-hero {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(40, 167, 69, 0.3);
+    }
+
+    .stats-summary {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        border-left: 4px solid #28a745;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #28a745;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .income-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .income-header {
+        background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+        border-bottom: 1px solid #c8e6c9;
+        padding: 1.5rem;
+    }
+
+    .income-list {
+        padding: 0;
+    }
+
+    .income-item {
+        background: white;
+        border-bottom: 1px solid #f1f3f4;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .income-item:hover {
+        background: #f8f9fa;
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .income-item:last-child {
+        border-bottom: none;
+    }
+
+    .income-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+        margin-right: 1rem;
+    }
+
+    .income-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 0.25rem;
+    }
+
+    .income-description {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+
+    .income-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .income-amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #28a745;
+        text-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+
+    .income-category {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .income-category i {
+        margin-right: 0.5rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .btn-info-gradient {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+    }
+
+    .btn-info-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        color: white;
+    }
+
+    .btn-warning-gradient {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+
+    .btn-warning-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+        color: white;
+    }
+
+    .btn-danger-gradient {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        color: white;
+    }
+
+    .btn-danger-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        color: white;
+    }
+
+    .btn-success-gradient {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #28a745;
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 1rem;
+    }
+
+    .empty-description {
+        color: #6c757d;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    .success-alert {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        border: 1px solid #28a745;
+        border-radius: 12px;
+        color: #155724;
+    }
+
+    @@media (max-width: 768px) {
+        .income-hero {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stats-summary {
+            padding: 1.5rem;
+        }
+
+        .income-item {
+            padding: 1rem;
+        }
+
+        .income-amount {
+            font-size: 1.2rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            height: 40px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Hero Section -->
+    <div class="income-hero">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">
+                    <i class="fas fa-coins me-3"></i>Income Management
+                </h1>
+                <p class="mb-0 opacity-75">Track and manage all your income sources</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a asp-action="Create" class="btn btn-success-gradient">
+                    <i class="fas fa-plus me-2"></i>Add New Income
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert success-alert alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <!-- Statistics Summary -->
+        <div class="stats-summary">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-value">@Model.Count()</div>
+                        <div class="stat-label">Total Income Records</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stat-card">
+<div class="stat-value">£@ViewBag.TotalIncome?.ToString("N2")</div>
+                        <div class="stat-label">Total Amount</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-value">@(((ViewBag.TotalIncome ?? 0m) / Math.Max(Model.Count(), 1)).ToString("C"))</div>
+                        <div class="stat-label">Average Amount</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-value">@Model.Select(i => i.Category?.Name).Distinct().Count()</div>
+                        <div class="stat-label">Categories Used</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Income List -->
+        <div class="income-card">
+            <div class="income-header">
+                <h5 class="mb-0 fw-bold text-success">
+                    <i class="fas fa-list me-2"></i>Income Records
+                </h5>
+                <small class="text-muted">All your income entries sorted by date</small>
+            </div>
+            <div class="income-list">
+                @foreach (var item in Model.OrderByDescending(i => i.Date))
+                {
+                    <div class="income-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-1 col-2">
+                                <div class="income-icon" style="background: linear-gradient(135deg, @(item.Category?.Color ?? "#28a745") 0%, @(item.Category?.Color ?? "#20c997") 100%);">
+                                    <i class="@(item.Category?.Icon ?? "fas fa-coins")"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-6">
+                                <div class="income-title">@item.Title</div>
+                                @if (!string.IsNullOrEmpty(item.Description))
+                                {
+                                    <div class="income-description">@item.Description</div>
+                                }
+                                @if (item.Category != null)
+                                {
+                                    <div class="income-category" style="background: linear-gradient(135deg, @item.Category.Color 0%, @item.Category.Color 100%);">
+                                        <i class="@item.Category.Icon"></i>@item.Category.Name
+                                    </div>
+                                }
+                                <div class="income-date">
+                                    <i class="fas fa-calendar me-1"></i>@item.Date.ToString("MMM dd, yyyy")
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-4 text-md-center">
+<div class="income-amount">+£@item.Amount.ToString("N2")</div>
+                            </div>
+                            <div class="col-md-3 col-12 text-md-end mt-2 mt-md-0">
+                                <div class="action-buttons">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-action btn-info-gradient" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-action btn-warning-gradient" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-action btn-danger-gradient" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="income-card">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h3 class="empty-title">No Income Records Found</h3>
+                <p class="empty-description">Start tracking your income by adding your first entry and take control of your financial growth.</p>
+                <a asp-action="Create" class="btn btn-success-gradient">
+                    <i class="fas fa-plus me-2"></i>Add Your First Income
+                </a>
+            </div>
+        </div>
+    }
+</div>

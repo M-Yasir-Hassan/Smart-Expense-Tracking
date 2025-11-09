@@ -1,0 +1,288 @@
+@{
+    ViewData["Title"] = "Smart Expense Tracker";
+}
+
+<div class="container-fluid">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="hero-section text-center py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 25px; color: white;">
+                <div class="mb-4">
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="60" cy="60" r="50" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+                        <path d="M40 45h40v30H40z" fill="white" opacity="0.9"/>
+                        <path d="M35 50h50v5H35z" fill="white"/>
+                        <path d="M35 60h50v5H35z" fill="white"/>
+                        <path d="M35 70h50v5H35z" fill="white"/>
+                        <circle cx="75" cy="35" r="8" fill="#4CAF50"/>
+                        <path d="M71 35l2 2 4-4" stroke="white" stroke-width="2" fill="none"/>
+                    </svg>
+                </div>
+                <h1 class="display-3 fw-bold mb-3">Smart Expense Tracker</h1>
+                <p class="lead mb-4">Take control of your finances with our comprehensive expense tracking and budgeting solution</p>
+                <div class="btn-group" role="group">
+                    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-light btn-lg px-4 me-3">
+                        <i class="fas fa-tachometer-alt me-2"></i>View Dashboard
+                    </a>
+                    <a asp-controller="Expense" asp-action="Create" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-plus me-2"></i>Add Expense
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-5 fw-bold text-primary mb-3">Powerful Features</h2>
+            <p class="lead text-muted">Everything you need to manage your finances effectively</p>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center p-4" style="border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%); border: 1px solid #e9ecef;">
+                <div class="mb-3">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="35" fill="#dc3545" opacity="0.1"/>
+                        <path d="M25 35h30v20H25z" fill="#dc3545"/>
+                        <path d="M20 40h40v3H20z" fill="#dc3545" opacity="0.7"/>
+                        <path d="M20 47h40v3H20z" fill="#dc3545" opacity="0.7"/>
+                        <circle cx="60" cy="25" r="6" fill="#ff6b6b"/>
+                        <path d="M57 25l2 2 3-3" stroke="white" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3 text-primary">Expense Tracking</h4>
+                <p class="text-muted mb-4">Track all your expenses with detailed categorization and smart analytics to understand your spending patterns.</p>
+                <a asp-controller="Expense" asp-action="Index" class="btn btn-outline-primary">
+                    <i class="fas fa-eye me-2"></i>View Expenses
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center p-4" style="border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%); border: 1px solid #e9ecef;">
+                <div class="mb-3">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="35" fill="#28a745" opacity="0.1"/>
+                        <path d="M25 30h30v25H25z" fill="#28a745"/>
+                        <path d="M30 35h20v3H30z" fill="white"/>
+                        <path d="M30 42h20v3H30z" fill="white"/>
+                        <path d="M30 49h15v3H30z" fill="white"/>
+                        <circle cx="60" cy="20" r="6" fill="#4CAF50"/>
+                        <path d="M57 20l2 2 3-3" stroke="white" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3 text-success">Income Management</h4>
+                <p class="text-muted mb-4">Monitor your income sources and track your earnings to get a complete picture of your financial health.</p>
+                <a asp-controller="Income" asp-action="Index" class="btn btn-outline-success">
+                    <i class="fas fa-eye me-2"></i>View Income
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center p-4" style="border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%); border: 1px solid #e9ecef;">
+                <div class="mb-3">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="35" fill="#ffc107" opacity="0.1"/>
+                        <path d="M20 25h40v30H20z" fill="#ffc107"/>
+                        <path d="M25 30h30v3H25z" fill="white"/>
+                        <path d="M25 37h25v3H25z" fill="white"/>
+                        <path d="M25 44h20v3H25z" fill="white"/>
+                        <circle cx="65" cy="15" r="8" fill="#ff9800"/>
+                        <text x="65" y="20" text-anchor="middle" fill="white" font-size="10" font-weight="bold">£</text>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3 text-warning">Budget Planning</h4>
+                <p class="text-muted mb-4">Create and manage budgets for different categories to stay on track with your financial goals.</p>
+                <a asp-controller="Budget" asp-action="Index" class="btn btn-outline-warning">
+                    <i class="fas fa-eye me-2"></i>View Budgets
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center p-4" style="border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%); border: 1px solid #e9ecef;">
+                <div class="mb-3">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="35" fill="#17a2b8" opacity="0.1"/>
+                        <path d="M20 50h40v5H20z" fill="#17a2b8"/>
+                        <path d="M25 45h30v5H25z" fill="#17a2b8" opacity="0.8"/>
+                        <path d="M30 40h20v5H30z" fill="#17a2b8" opacity="0.6"/>
+                        <path d="M35 35h10v5H35z" fill="#17a2b8" opacity="0.4"/>
+                        <circle cx="60" cy="20" r="6" fill="#20c997"/>
+                        <path d="M57 20l2 2 3-3" stroke="white" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3 text-info">Analytics & Reports</h4>
+                <p class="text-muted mb-4">Get detailed insights with interactive charts and comprehensive reports to make informed decisions.</p>
+                <a asp-controller="Reports" asp-action="Index" class="btn btn-outline-info">
+                    <i class="fas fa-eye me-2"></i>View Reports
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center p-4" style="border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%); border: 1px solid #e9ecef;">
+                <div class="mb-3">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="35" fill="#dc3545" opacity="0.1"/>
+                        <path d="M25 25h30v30H25z" fill="#dc3545"/>
+                        <circle cx="40" cy="40" r="12" fill="white"/>
+                        <path d="M35 40l3 3 7-7" stroke="#dc3545" stroke-width="2" fill="none"/>
+                        <circle cx="60" cy="20" r="6" fill="#28a745"/>
+                        <path d="M57 20l2 2 3-3" stroke="white" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3 text-danger">Secure & Private</h4>
+                <p class="text-muted mb-4">Your financial data is protected with industry-standard security measures and user authentication.</p>
+                <a asp-controller="Home" asp-action="Privacy" class="btn btn-outline-danger">
+                    <i class="fas fa-shield-alt me-2"></i>Privacy Policy
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="feature-card h-100 text-center p-4" style="border-radius: 20px; background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%); border: 1px solid #e9ecef;">
+                <div class="mb-3">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="35" fill="#343a40" opacity="0.1"/>
+                        <path d="M20 20h40v35H20z" fill="#343a40"/>
+                        <path d="M25 25h30v5H25z" fill="white"/>
+                        <path d="M25 35h25v3H25z" fill="white" opacity="0.8"/>
+                        <path d="M25 42h20v3H25z" fill="white" opacity="0.6"/>
+                        <path d="M25 49h15v3H25z" fill="white" opacity="0.4"/>
+                        <circle cx="65" cy="15" r="8" fill="#007bff"/>
+                        <path d="M61 15l2 2 4-4" stroke="white" stroke-width="1.5" fill="none"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-3 text-dark">Real-time Dashboard</h4>
+                <p class="text-muted mb-4">Monitor your financial status at a glance with our comprehensive and intuitive dashboard interface.</p>
+                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-dark">
+                    <i class="fas fa-tachometer-alt me-2"></i>Open Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="stats-section text-center py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 25px;">
+                <h3 class="fw-bold mb-4 text-primary">Why Choose Smart Expense Tracker?</h3>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="stat-item">
+                            <div class="mb-2">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="24" cy="24" r="20" fill="#28a745" opacity="0.2"/>
+                                    <path d="M16 24l6 6 12-12" stroke="#28a745" stroke-width="3" fill="none"/>
+                                </svg>
+                            </div>
+                            <h5 class="fw-bold text-success">Easy to Use</h5>
+                            <p class="text-muted mb-0">Intuitive interface designed for everyone</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="stat-item">
+                            <div class="mb-2">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="24" cy="24" r="20" fill="#007bff" opacity="0.2"/>
+                                    <path d="M12 24h24M30 18l6 6-6 6" stroke="#007bff" stroke-width="3" fill="none"/>
+                                </svg>
+                            </div>
+                            <h5 class="fw-bold text-primary">Fast Performance</h5>
+                            <p class="text-muted mb-0">Lightning-fast data processing and updates</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="stat-item">
+                            <div class="mb-2">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="24" cy="24" r="20" fill="#ffc107" opacity="0.2"/>
+                                    <path d="M16 12h16v24H16z" fill="#ffc107"/>
+                                    <path d="M18 16h12v2H18zM18 20h10v2H18zM18 24h8v2H18z" fill="white"/>
+                                </svg>
+                            </div>
+                            <h5 class="fw-bold text-warning">Mobile Friendly</h5>
+                            <p class="text-muted mb-0">Responsive design works on all devices</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="stat-item">
+                            <div class="mb-2">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="24" cy="24" r="20" fill="#17a2b8" opacity="0.2"/>
+                                    <circle cx="24" cy="20" r="8" fill="#17a2b8"/>
+                                    <path d="M16 32c0-4 4-8 8-8s8 4 8 8" fill="#17a2b8"/>
+                                </svg>
+                            </div>
+                            <h5 class="fw-bold text-info">24/7 Support</h5>
+                            <p class="text-muted mb-0">Always here to help you succeed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row">
+        <div class="col-12">
+            <div class="cta-section text-center py-5" style="background: linear-gradient(135deg, #51cf66 0%, #40c057 100%); border-radius: 25px; color: white;">
+                <img src="https://img.icons8.com/color/80/ffffff/rocket.png" alt="Get Started" class="mb-3">
+                <h3 class="fw-bold mb-3">Ready to Take Control of Your Finances?</h3>
+                <p class="lead mb-4">Start tracking your expenses and building better financial habits today!</p>
+                <div class="btn-group" role="group">
+                    <a asp-controller="Expense" asp-action="Create" class="btn btn-light btn-lg px-4 me-3">
+                        <i class="fas fa-plus me-2"></i>Add First Expense
+                    </a>
+                    <a asp-controller="Income" asp-action="Create" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-coins me-2"></i>Add First Income
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+    
+    .feature-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    .stats-section {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    
+    .stat-item {
+        padding: 20px;
+    }
+    
+    .cta-section {
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+    
+    .btn-lg {
+        border-radius: 10px;
+        padding: 12px 30px;
+    }
+    
+    .display-3 {
+        font-size: 3.5rem;
+    }
+    
+    .display-5 {
+        font-size: 2.5rem;
+    }
+</style>

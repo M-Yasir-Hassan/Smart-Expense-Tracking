@@ -1,0 +1,832 @@
+@model SmartExpenseTracker.Models.Budget
+
+@{
+    ViewData["Title"] = "Budget Details";
+    var spentAmount = ViewBag.SpentAmount as decimal? ?? 0;
+    var remainingAmount = Model.Amount - spentAmount;
+    var progressPercentage = Model.Amount > 0 ? (double)(spentAmount / Model.Amount * 100) : 0;
+    var progressClass = progressPercentage >= 100 ? "bg-danger" : progressPercentage >= 80 ? "bg-warning" : "bg-success";
+    var statusClass = Model.IsActive ? "success" : "secondary";
+    var statusText = Model.IsActive ? "Active" : "Inactive";
+}
+
+<style>
+    .budget-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 3rem 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .budget-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .budget-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .budget-id {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-top: 1rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+        color: white;
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+        color: white;
+    }
+
+    .progress-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 2px solid #f8f9fa;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .progress-header {
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .progress-body {
+        padding: 2.5rem;
+    }
+
+    .progress-section {
+        margin-bottom: 2rem;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        color: #495057;
+    }
+
+    .progress-percentage {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+    }
+
+    .custom-progress {
+        height: 25px;
+        border-radius: 15px;
+        background: #f8f9fa;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .custom-progress-bar {
+        height: 100%;
+        border-radius: 15px;
+        position: relative;
+        transition: width 1s ease-in-out;
+        background: linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 25%, rgba(255,255,255,0.2) 50%, transparent 50%, transparent 75%, rgba(255,255,255,0.2) 75%);
+        background-size: 20px 20px;
+        animation: progress-animation 2s linear infinite;
+    }
+
+    @@keyframes progress-animation {
+        0% { background-position: 0 0; }
+        100% { background-position: 20px 0; }
+    }
+
+    .progress-success {
+        background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+    }
+
+    .progress-warning {
+        background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+    }
+
+    .progress-danger {
+        background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+    }
+
+    .financial-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .financial-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 2px solid #dee2e6;
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .financial-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--card-color);
+        border-radius: 20px 20px 0 0;
+    }
+
+    .financial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .financial-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .financial-amount {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: var(--amount-color);
+    }
+
+    .financial-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 2px solid #f8f9fa;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .details-header {
+        background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .details-body {
+        padding: 2.5rem;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .detail-item {
+        margin-bottom: 2rem;
+    }
+
+    .detail-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-label i {
+        margin-right: 0.75rem;
+        font-size: 1rem;
+        color: #667eea;
+    }
+
+    .detail-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        border: 2px solid #dee2e6;
+    }
+
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .category-badge i {
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    .days-remaining {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .days-success { color: #00b894; }
+    .days-warning { color: #fdcb6e; }
+    .days-danger { color: #fd79a8; }
+
+    .description-box {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 2px solid #ffc107;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .description-text {
+        margin: 0;
+        color: #856404;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .audit-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 2px solid #f8f9fa;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .audit-header {
+        background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .audit-body {
+        padding: 2.5rem;
+    }
+
+    .audit-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .audit-item {
+        text-align: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        border: 2px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+    .audit-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .audit-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .audit-type {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: #495057;
+    }
+
+    .audit-date {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-back {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(108, 117, 125, 0.4);
+        color: white;
+    }
+
+    .btn-back i {
+        margin-right: 0.75rem;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
+    }
+
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(255, 193, 7, 0.4);
+        color: white;
+    }
+
+    .btn-edit i {
+        margin-right: 0.75rem;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 8px 20px rgba(253, 121, 168, 0.3);
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(253, 121, 168, 0.4);
+    }
+
+    .btn-delete i {
+        margin-right: 0.75rem;
+    }
+
+    .delete-modal {
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+
+    .delete-modal-header {
+        background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        border-bottom: none;
+    }
+
+    .delete-modal-body {
+        padding: 2.5rem;
+        text-align: center;
+    }
+
+    .delete-icon {
+        font-size: 4rem;
+        color: #fd79a8;
+        margin-bottom: 1.5rem;
+        animation: shake 2s infinite;
+    }
+
+    @@keyframes shake {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-5deg); }
+        75% { transform: rotate(5deg); }
+    }
+
+    .delete-warning {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 2px solid #ffc107;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .modal-footer {
+        padding: 2rem;
+        border-top: 2px solid #f1f3f4;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-confirm-delete {
+        background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-confirm-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(253, 121, 168, 0.3);
+    }
+
+    @@media (max-width: 768px) {
+        .budget-hero {
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .budget-title {
+            font-size: 2rem;
+        }
+
+        .progress-body, .details-body, .audit-body {
+            padding: 1.5rem;
+        }
+
+        .financial-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .audit-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-back, .btn-edit, .btn-delete {
+            width: 100%;
+            justify-content: center;
+            max-width: 300px;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <!-- Hero Section -->
+            <div class="budget-hero">
+                <div class="hero-content">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="budget-title">@Model.Name</h1>
+                            <p class="budget-id mb-0">Budget ID: #@Model.Id - Detailed overview and management</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="status-badge @(Model.IsActive ? "status-active" : "status-inactive")">
+                                <i class="fas fa-circle me-2"></i>@statusText
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Overview Card -->
+            <div class="progress-card">
+                <div class="progress-header">
+                    <h3 class="mb-2">
+                        <i class="fas fa-chart-pie me-2"></i>Budget Progress Overview
+                    </h3>
+                    <p class="mb-0" style="opacity: 0.9;">Track your spending against your budget limits</p>
+                </div>
+                <div class="progress-body">
+                    <!-- Progress Bar Section -->
+                    <div class="progress-section">
+                        <div class="progress-label">
+                            <span><i class="fas fa-chart-line me-2"></i>Budget Progress</span>
+                            <span class="progress-percentage">@progressPercentage.ToString("F1")%</span>
+                        </div>
+                        <div class="custom-progress">
+                            <div class="custom-progress-bar @(progressPercentage >= 100 ? "progress-danger" : progressPercentage >= 80 ? "progress-warning" : "progress-success")" 
+                                 style="width: @Math.Min(progressPercentage, 100)%">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Financial Summary -->
+                    <div class="financial-summary">
+                        <div class="financial-card" style="--card-color: #667eea; --amount-color: #667eea;">
+                            <i class="fas fa-wallet financial-icon" style="color: #667eea;"></i>
+                            <div class="financial-amount">@Model.Amount.ToString("C")</div>
+                            <div class="financial-label">Total Budget</div>
+                        </div>
+                        <div class="financial-card" style="--card-color: #fd79a8; --amount-color: #fd79a8;">
+                            <i class="fas fa-credit-card financial-icon" style="color: #fd79a8;"></i>
+                            <div class="financial-amount">@spentAmount.ToString("C")</div>
+                            <div class="financial-label">Amount Spent</div>
+                        </div>
+                        <div class="financial-card" style="--card-color: @(remainingAmount >= 0 ? "#00b894" : "#fd79a8"); --amount-color: @(remainingAmount >= 0 ? "#00b894" : "#fd79a8");">
+                            <i class="fas @(remainingAmount >= 0 ? "fa-piggy-bank" : "fa-exclamation-triangle") financial-icon" style="color: @(remainingAmount >= 0 ? "#00b894" : "#fd79a8");"></i>
+                            <div class="financial-amount">@remainingAmount.ToString("C")</div>
+                            <div class="financial-label">@(remainingAmount >= 0 ? "Remaining" : "Over Budget")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Details Card -->
+            <div class="details-card">
+                <div class="details-header">
+                    <h3 class="mb-2">
+                        <i class="fas fa-info-circle me-2"></i>Budget Information
+                    </h3>
+                    <p class="mb-0" style="opacity: 0.9;">Complete details about your budget configuration</p>
+                </div>
+                <div class="details-body">
+                    <div class="detail-grid">
+                        <div class="detail-column">
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-tag"></i>Budget Name
+                                </div>
+                                <div class="detail-value">@Model.Name</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-folder"></i>Category
+                                </div>
+                                <div class="detail-value">
+                                    <span class="category-badge" style="background-color: @Model.Category.Color;">
+                                        <i class="@Model.Category.Icon"></i>@Model.Category.Name
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-calendar-alt"></i>Duration
+                                </div>
+                                <div class="detail-value">@((Model.EndDate - Model.StartDate).Days) days</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-column">
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-play-circle"></i>Start Date
+                                </div>
+                                <div class="detail-value">@Model.StartDate.ToString("MMMM dd, yyyy")</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-stop-circle"></i>End Date
+                                </div>
+                                <div class="detail-value">@Model.EndDate.ToString("MMMM dd, yyyy")</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-label">
+                                    <i class="fas fa-clock"></i>Days Remaining
+                                </div>
+                                @{
+                                    var daysRemaining = (Model.EndDate - DateTime.Now).Days;
+                                    var daysRemainingClass = daysRemaining <= 0 ? "days-danger" : daysRemaining <= 7 ? "days-warning" : "days-success";
+                                }
+                                <div class="detail-value">
+                                    <span class="days-remaining @daysRemainingClass">
+                                        @(daysRemaining <= 0 ? "Expired" : $"{daysRemaining} days")
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="description-box">
+                            <div class="detail-label" style="color: #856404; margin-bottom: 1rem;">
+                                <i class="fas fa-comment"></i>Description
+                            </div>
+                            <p class="description-text">@Model.Description</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Audit Information Card -->
+            <div class="audit-card">
+                <div class="audit-header">
+                    <h3 class="mb-2">
+                        <i class="fas fa-history me-2"></i>Audit Trail
+                    </h3>
+                    <p class="mb-0" style="opacity: 0.9;">Track creation and modification history</p>
+                </div>
+                <div class="audit-body">
+                    <div class="audit-grid">
+                        <div class="audit-item">
+                            <i class="fas fa-plus-circle audit-icon" style="color: #00b894;"></i>
+                            <div class="audit-type" style="color: #00b894;">Created</div>
+                            <div class="audit-date">@Model.CreatedDate.ToString("MMM dd, yyyy 'at' hh:mm tt")</div>
+                        </div>
+                        <div class="audit-item">
+                            <i class="fas fa-edit audit-icon" style="color: #fdcb6e;"></i>
+                            <div class="audit-type" style="color: #fdcb6e;">Last Modified</div>
+                            <div class="audit-date">
+                                @(Model.ModifiedDate?.ToString("MMM dd, yyyy 'at' hh:mm tt") ?? "Never modified")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a asp-action="Index" class="btn-back">
+                    <i class="fas fa-arrow-left"></i>Back to Budgets
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit">
+                    <i class="fas fa-edit"></i>Edit Budget
+                </a>
+                <button type="button" class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="fas fa-trash"></i>Delete Budget
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content delete-modal">
+            <div class="delete-modal-header">
+                <h4 class="mb-0" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Budget Deletion
+                </h4>
+            </div>
+            <div class="delete-modal-body">
+                <i class="fas fa-trash-alt delete-icon"></i>
+                <h5 style="color: #495057; margin-bottom: 1rem;">Are you sure you want to delete this budget?</h5>
+                <p style="color: #6c757d; margin-bottom: 1.5rem;">This action cannot be undone. All associated data will be permanently removed.</p>
+                <div class="delete-warning">
+                    <div style="font-weight: 700; color: #856404; margin-bottom: 0.5rem;">
+                        <i class="fas fa-info-circle me-2"></i>Budget Details
+                    </div>
+                    <div style="color: #856404;">
+                        <strong>Name:</strong> @Model.Name<br>
+                        <strong>Amount:</strong> @Model.Amount.ToString("C")<br>
+                        <strong>Category:</strong> @Model.Category.Name
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <form asp-action="Delete" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn-confirm-delete">
+                        <i class="fas fa-trash me-2"></i>Delete Budget
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate progress bar on load
+        const progressBar = document.querySelector('.custom-progress-bar');
+        if (progressBar) {
+            const targetWidth = progressBar.style.width;
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                progressBar.style.width = targetWidth;
+            }, 500);
+        }
+
+        // Add hover effects to cards
+        const cards = document.querySelectorAll('.financial-card, .audit-item, .detail-item');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Enhanced delete confirmation
+        const deleteBtn = document.querySelector('.btn-delete');
+        const deleteModal = document.getElementById('deleteModal');
+        
+        if (deleteBtn && deleteModal) {
+            deleteBtn.addEventListener('click', function() {
+                // Add shake animation to delete icon when modal opens
+                setTimeout(() => {
+                    const deleteIcon = deleteModal.querySelector('.delete-icon');
+                    if (deleteIcon) {
+                        deleteIcon.style.animation = 'shake 0.5s ease-in-out 3';
+                    }
+                }, 300);
+            });
+        }
+    });
+</script>

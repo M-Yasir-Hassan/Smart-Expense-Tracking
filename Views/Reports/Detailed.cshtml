@@ -1,0 +1,620 @@
+@model SmartExpenseTracker.ViewModels.DetailedReportsViewModel
+
+@{
+    ViewData["Title"] = "Detailed Financial Reports";
+}
+
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 25px;
+        color: white;
+        padding: 3rem 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    /* Filter Card */
+    .filter-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    
+    .filter-header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    /* Summary Cards */
+    .summary-card {
+        border-radius: 20px;
+        border: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .summary-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        pointer-events: none;
+    }
+    
+    .income-card {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    }
+    
+    .expense-card {
+        background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+    }
+    
+    .net-income-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .net-loss-card {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    }
+    
+    /* Animation Classes */
+    .fade-in {
+        animation: fadeIn 0.6s ease-in;
+    }
+    
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .slide-up {
+        animation: slideUp 0.8s ease-out;
+    }
+    
+    @@keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Modern Button Styles */
+    .btn-modern {
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .btn-modern:hover::before {
+        left: 100%;
+    }
+    
+    .btn-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+        color: white;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Hero Section -->
+    <div class="hero-section fade-in">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <i class="fas fa-chart-line me-3"></i>Detailed Financial Reports
+                </h1>
+                <p class="lead mb-0 opacity-90">
+                    Comprehensive transaction analysis from @Model.StartDate.ToString("MMM dd, yyyy") to @Model.EndDate.ToString("MMM dd, yyyy")
+                </p>
+            </div>
+            <div class="col-md-4 text-end d-none d-md-block">
+                <i class="fas fa-analytics" style="font-size: 4rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="filter-card slide-up">
+        <div class="filter-header">
+            <h5 class="mb-0 d-flex align-items-center">
+                <i class="fas fa-filter me-2"></i>Advanced Filters
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Detailed" method="get">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <label for="startDate" class="form-label">
+                            <i class="fas fa-calendar-alt me-2 text-primary"></i>Start Date
+                        </label>
+                        <input type="date" id="startDate" name="startDate" value="@ViewBag.StartDate" class="form-control" />
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="endDate" class="form-label">
+                            <i class="fas fa-calendar-check me-2 text-primary"></i>End Date
+                        </label>
+                        <input type="date" id="endDate" name="endDate" value="@ViewBag.EndDate" class="form-control" />
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="categoryId" class="form-label">
+                            <i class="fas fa-tags me-2 text-primary"></i>Category
+                        </label>
+                        <select id="categoryId" name="categoryId" asp-items="ViewBag.CategoryId" class="form-select">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-modern btn-primary-modern me-2">
+                            <i class="fas fa-search me-2"></i>Apply Filters
+                        </button>
+                        <a asp-action="Detailed" class="btn btn-modern btn-secondary-modern">
+                            <i class="fas fa-undo me-2"></i>Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4 slide-up">
+        <div class="col-lg-4 mb-3">
+            <div class="summary-card income-card h-100">
+                <div class="card-body text-white text-center p-4">
+                    <div class="d-flex justify-content-center mb-3">
+                        <i class="fas fa-arrow-up" style="font-size: 3rem; opacity: 0.8;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-2">@Model.TotalIncome.ToString("C")</h2>
+                    <p class="mb-1 opacity-90">Total Income</p>
+                    <small class="opacity-75">@Model.Income.Count transactions</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-3">
+            <div class="summary-card expense-card h-100">
+                <div class="card-body text-white text-center p-4">
+                    <div class="d-flex justify-content-center mb-3">
+                        <i class="fas fa-arrow-down" style="font-size: 3rem; opacity: 0.8;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-2">@Model.TotalExpenses.ToString("C")</h2>
+                    <p class="mb-1 opacity-90">Total Expenses</p>
+                    <small class="opacity-75">@Model.Expenses.Count transactions</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-3">
+            <div class="summary-card @(Model.NetIncome >= 0 ? "net-income-card" : "net-loss-card") h-100">
+                <div class="card-body text-white text-center p-4">
+                    <div class="d-flex justify-content-center mb-3">
+                        <i class="fas fa-@(Model.NetIncome >= 0 ? "chart-line" : "exclamation-triangle")" style="font-size: 3rem; opacity: 0.8;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-2">@Model.NetIncome.ToString("C")</h2>
+                    <p class="mb-1 opacity-90">Net @(Model.NetIncome >= 0 ? "Income" : "Loss")</p>
+                    <small class="opacity-75">@(Model.Income.Count + Model.Expenses.Count) total transactions</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expenses Table -->
+    @if (Model.Expenses.Any())
+    {
+        <div class="transaction-card slide-up">
+            <div class="expense-header">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="fas fa-credit-card me-2"></i>Expense Transactions (@Model.Expenses.Count)
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th class="text-end">Amount</th>
+                                <th>Description</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var expense in Model.Expenses)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">@expense.Date.ToString("MMM dd")</div>
+                                        <small class="text-muted">@expense.Date.ToString("yyyy")</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">@expense.Title</div>
+                                    </td>
+                                    <td>
+                                        <span class="category-badge" style="background-color: @expense.Category.Color; color: white;">
+                                            <i class="@expense.Category.Icon"></i>@expense.Category.Name
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="fw-bold text-danger fs-5">@expense.Amount.ToString("C")</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">@(string.IsNullOrEmpty(expense.Description) ? "No description" : expense.Description)</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-controller="Expense" asp-action="Details" asp-route-id="@expense.Id" 
+                                               class="action-btn btn-outline-primary" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-controller="Expense" asp-action="Edit" asp-route-id="@expense.Id" 
+                                               class="action-btn btn-outline-warning" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Income Table -->
+    @if (Model.Income.Any())
+    {
+        <div class="transaction-card slide-up">
+            <div class="income-header">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="fas fa-coins me-2"></i>Income Transactions (@Model.Income.Count)
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th class="text-end">Amount</th>
+                                <th>Description</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var income in Model.Income)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">@income.Date.ToString("MMM dd")</div>
+                                        <small class="text-muted">@income.Date.ToString("yyyy")</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">@income.Title</div>
+                                    </td>
+                                    <td>
+                                        <span class="category-badge" style="background-color: @income.Category.Color; color: white;">
+                                            <i class="@income.Category.Icon"></i>@income.Category.Name
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="fw-bold text-success fs-5">@income.Amount.ToString("C")</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">@(string.IsNullOrEmpty(income.Description) ? "No description" : income.Description)</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-controller="Income" asp-action="Details" asp-route-id="@income.Id" 
+                                               class="action-btn btn-outline-primary" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-controller="Income" asp-action="Edit" asp-route-id="@income.Id" 
+                                               class="action-btn btn-outline-warning" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- No Data Message -->
+    @if (!Model.Expenses.Any() && !Model.Income.Any())
+    {
+        <div class="no-data-card slide-up">
+            <div class="no-data-icon">
+                <i class="fas fa-chart-bar text-muted" style="font-size: 5rem;"></i>
+            </div>
+            <h4 class="text-muted mb-3">No Transactions Found</h4>
+            <p class="text-muted mb-4">No financial data available for the selected period and filters.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a asp-controller="Expense" asp-action="Create" class="btn btn-modern btn-primary-modern">
+                    <i class="fas fa-plus me-2"></i>Add Expense
+                </a>
+                <a asp-controller="Income" asp-action="Create" class="btn btn-modern btn-success-modern">
+                    <i class="fas fa-plus me-2"></i>Add Income
+                </a>
+            </div>
+        </div>
+    }
+
+    <!-- Action Buttons -->
+    <div class="main-actions slide-up">
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a asp-action="Index" class="btn btn-modern btn-secondary-modern">
+                <i class="fas fa-arrow-left me-2"></i>Back to Reports
+            </a>
+            <a asp-action="Export" asp-route-startDate="@ViewBag.StartDate" asp-route-endDate="@ViewBag.EndDate" asp-route-categoryId="@ViewBag.SelectedCategoryId" 
+               class="btn btn-modern btn-success-modern">
+                <i class="fas fa-download me-2"></i>Export to CSV
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Transaction Tables */
+    .transaction-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: none;
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+    
+    .expense-header {
+        background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        color: white;
+        padding: 1.5rem;
+    }
+    
+    .income-header {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        padding: 1.5rem;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table th {
+        background: #f8fafc;
+        border: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        color: #4a5568;
+        padding: 1rem;
+    }
+    
+    .table td {
+        border: none;
+        padding: 1rem;
+        vertical-align: middle;
+    }
+    
+    .table tbody tr {
+        transition: all 0.3s ease;
+    }
+    
+    .table tbody tr:hover {
+        background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(102, 126, 234, 0.02) 100%);
+        transform: translateX(5px);
+    }
+    
+    /* Category Badges */
+    .category-badge {
+        border-radius: 25px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Action Buttons */
+    .action-btn {
+        border-radius: 8px;
+        padding: 0.5rem;
+        width: 35px;
+        height: 35px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    /* No Data Section */
+    .no-data-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: none;
+        text-align: center;
+        padding: 3rem 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .no-data-icon {
+        margin-bottom: 2rem;
+    }
+    
+    /* Action Buttons */
+    .main-actions {
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .btn-success-modern {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+    }
+    
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        
+        .summary-card {
+            margin-bottom: 1rem;
+        }
+        
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+        
+        .btn-modern {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .d-flex.gap-3 {
+            flex-direction: column;
+        }
+        
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add loading animation to cards
+        const cards = document.querySelectorAll('.slide-up');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+        
+        // Enhanced hover effects for transaction rows
+        const tableRows = document.querySelectorAll('.table tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(10px)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+        
+        // Add click animation to action buttons
+        const actionButtons = document.querySelectorAll('.action-btn');
+        actionButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    });
+</script>

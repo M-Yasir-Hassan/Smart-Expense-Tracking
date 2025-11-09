@@ -1,0 +1,824 @@
+@model SmartExpenseTracker.Models.Budget
+
+@{
+    ViewData["Title"] = "Create New Budget";
+}
+
+<style>
+    .budget-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 2px solid #f8f9fa;
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 2px solid #f1f3f4;
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #495057;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-label i {
+        margin-right: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        background: white;
+        transform: translateY(-2px);
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: 2px solid #667eea;
+        border-right: none;
+        font-weight: 700;
+        border-radius: 12px 0 0 12px;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+        border-radius: 0 12px 12px 0;
+    }
+
+    .quick-amounts {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .quick-amount-btn {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 2px solid #dee2e6;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .quick-amount-btn:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+        transform: translateY(-2px);
+    }
+
+    .form-check-input {
+        width: 3rem;
+        height: 1.5rem;
+        border-radius: 20px;
+        border: 2px solid #dee2e6;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    .form-check-input:checked {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-color: #28a745;
+    }
+
+    .form-check-label {
+        font-weight: 600;
+        color: #495057;
+        margin-left: 1rem;
+    }
+
+    .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        border: 2px solid #c3e6cb;
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border: 2px solid #f5c6cb;
+    }
+
+    .description-field {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 2px solid #ffc107;
+        border-radius: 15px;
+        padding: 1.25rem;
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .description-field:focus {
+        background: white;
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    .tips-card {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border: 2px solid #2196f3;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .tips-header {
+        color: #1565c0;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .tips-header i {
+        margin-right: 0.75rem;
+        font-size: 1.2rem;
+    }
+
+    .tips-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tips-list li {
+        padding: 0.5rem 0;
+        color: #1565c0;
+        font-weight: 500;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .tips-list li::before {
+        content: '💡';
+        margin-right: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid #f1f3f4;
+    }
+
+    .btn-back {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+        color: white;
+    }
+
+    .btn-back i {
+        margin-right: 0.75rem;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 3rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-create:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-create i {
+        margin-right: 0.75rem;
+    }
+
+    .budget-id {
+        font-size: 1.2rem;
+        opacity: 0.8;
+        font-weight: 500;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        border: 2px solid #dee2e6;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #495057;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .section-title i {
+        margin-right: 0.75rem;
+        color: #667eea;
+        font-size: 1.2rem;
+    }
+
+    .validation-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+    .validation-error i {
+        margin-right: 0.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .budget-hero {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .form-body {
+            padding: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-back, .btn-create {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .quick-amounts {
+            justify-content: center;
+        }
+
+        .form-section {
+            padding: 1rem;
+        }
+    }
+
+    .shake {
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @@keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Hero Section -->
+            <div class="budget-hero">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2">
+                            <i class="fas fa-plus-circle me-3"></i>Create New Budget
+                        </h1>
+                        <p class="mb-0 budget-id">Set spending limits and track your financial goals</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a asp-action="Index" class="btn-back">
+                            <i class="fas fa-arrow-left"></i>Back to Budgets
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="form-header">
+                    <h3 class="mb-2" style="color: #667eea;">
+                        <i class="fas fa-chart-pie me-2"></i>Budget Information
+                    </h3>
+                    <p class="mb-0" style="color: #6c757d;">Fill in the details to create your budget</p>
+                </div>
+                
+                <div class="form-body">
+                    <form asp-action="Create" method="post" id="budgetForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="border-radius: 12px; border: none;"></div>
+                        
+                        <!-- Basic Information Section -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <i class="fas fa-info-circle"></i>Basic Information
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Name" class="form-label">
+                                        <i class="fas fa-tag" style="color: #667eea;"></i>Budget Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Name" class="form-control" placeholder="e.g., Monthly Groceries, Entertainment Budget" />
+                                    <span asp-validation-for="Name" class="validation-error">
+                                    </span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Amount" class="form-label">
+<i class="fas fa-pound-sign" style="color: #28a745;"></i>Budget Amount <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+<span class="input-group-text">£</span>
+                                        <input asp-for="Amount" class="form-control" placeholder="0.00" step="0.01" id="amountInput" />
+                                    </div>
+                                    <div class="quick-amounts">
+<button type="button" class="quick-amount-btn" data-amount="100">£100</button>
+<button type="button" class="quick-amount-btn" data-amount="250">£250</button>
+<button type="button" class="quick-amount-btn" data-amount="500">£500</button>
+<button type="button" class="quick-amount-btn" data-amount="1000">£1,000</button>
+<button type="button" class="quick-amount-btn" data-amount="2000">£2,000</button>
+                                    </div>
+                                    <span asp-validation-for="Amount" class="validation-error">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Date Range Section -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <i class="fas fa-calendar-alt"></i>Budget Period
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="StartDate" class="form-label">
+                                        <i class="fas fa-play-circle" style="color: #17a2b8;"></i>Start Date <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="StartDate" class="form-control" type="date" />
+                                    <span asp-validation-for="StartDate" class="validation-error">
+                                    </span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="EndDate" class="form-label">
+                                        <i class="fas fa-stop-circle" style="color: #ffc107;"></i>End Date <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="EndDate" class="form-control" type="date" />
+                                    <span asp-validation-for="EndDate" class="validation-error">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category and Status Section -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <i class="fas fa-cog"></i>Configuration
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="CategoryId" class="form-label">
+                                        <i class="fas fa-folder" style="color: #6f42c1;"></i>Category <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                                        <option value="">-- Select Category --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="validation-error">
+                                    </span>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="fas fa-toggle-on" style="color: #28a745;"></i>Status
+                                    </label>
+                                    <div class="d-flex align-items-center">
+                                        <input asp-for="IsActive" class="form-check-input" type="checkbox" id="statusToggle" />
+                                        <label asp-for="IsActive" class="form-check-label">
+                                            Active Budget
+                                        </label>
+                                    </div>
+                                    <div class="status-indicator" id="statusIndicator">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <span id="statusText">Inactive - Budget will not be tracked</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description Section -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <i class="fas fa-comment"></i>Additional Details
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">
+                                    <i class="fas fa-edit" style="color: #6c757d;"></i>Description
+                                </label>
+                                <textarea asp-for="Description" class="form-control description-field" rows="4" 
+                                          placeholder="Optional description about this budget, goals, or notes..."></textarea>
+                                <span asp-validation-for="Description" class="validation-error">
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Budget Tips -->
+                        <div class="tips-card">
+                            <div class="tips-header">
+                                <i class="fas fa-lightbulb"></i>Budget Tips
+                            </div>
+                            <ul class="tips-list">
+                                <li>Set realistic budget amounts based on your spending history</li>
+                                <li>Choose specific categories to track spending more effectively</li>
+                                <li>Review and adjust your budgets monthly for better results</li>
+                                <li>Use the 50/30/20 rule: 50% needs, 30% wants, 20% savings</li>
+                                <li>Start with smaller amounts and increase gradually</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <a asp-action="Index" class="btn-back">
+                                <i class="fas fa-arrow-left"></i>Back to Budgets
+                            </a>
+                            <button type="submit" class="btn-create" id="createBtn">
+                                <i class="fas fa-save"></i>Create Budget
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default dates
+            const startDateInput = document.querySelector('input[name="StartDate"]');
+            const endDateInput = document.querySelector('input[name="EndDate"]');
+            
+            if (startDateInput && !startDateInput.value) {
+                const today = new Date().toISOString().split('T')[0];
+                startDateInput.value = today;
+            }
+            
+            if (endDateInput && !endDateInput.value) {
+                const nextMonth = new Date();
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                endDateInput.value = nextMonth.toISOString().split('T')[0];
+            }
+            
+            // Update end date when start date changes
+            startDateInput?.addEventListener('change', function() {
+                const startDate = new Date(this.value);
+                const endDate = new Date(startDate);
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDateInput.value = endDate.toISOString().split('T')[0];
+            });
+
+            // Quick amount buttons
+            const quickAmountBtns = document.querySelectorAll('.quick-amount-btn');
+            const amountInput = document.getElementById('amountInput');
+            
+            quickAmountBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const amount = this.getAttribute('data-amount');
+                    amountInput.value = amount;
+                    amountInput.focus();
+                    
+                    // Add visual feedback
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Status toggle functionality
+            const statusToggle = document.getElementById('statusToggle');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            function updateStatusDisplay() {
+                if (statusToggle.checked) {
+                    statusIndicator.className = 'status-indicator status-active';
+                    statusText.innerHTML = '<i class="fas fa-check-circle me-2"></i>Active - Budget will be tracked and monitored';
+                } else {
+                    statusIndicator.className = 'status-indicator status-inactive';
+                    statusText.innerHTML = '<i class="fas fa-pause-circle me-2"></i>Inactive - Budget will not be tracked';
+                }
+            }
+            
+            statusToggle.addEventListener('change', updateStatusDisplay);
+            updateStatusDisplay(); // Initial call
+
+            // Form validation enhancements
+            const form = document.getElementById('budgetForm');
+            const createBtn = document.getElementById('createBtn');
+            
+            // Create message container for frontend feedback
+            function createMessageContainer() {
+                let messageContainer = document.getElementById('frontend-messages');
+                if (!messageContainer) {
+                    messageContainer = document.createElement('div');
+                    messageContainer.id = 'frontend-messages';
+                    messageContainer.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 9999;
+                        max-width: 400px;
+                    `;
+                    document.body.appendChild(messageContainer);
+                }
+                return messageContainer;
+            }
+
+            // Show message function
+            function showMessage(message, type = 'info') {
+                const container = createMessageContainer();
+                const messageDiv = document.createElement('div');
+                
+                const bgColor = type === 'success' ? '#d4edda' : 
+                               type === 'error' ? '#f8d7da' : 
+                               type === 'warning' ? '#fff3cd' : '#d1ecf1';
+                const textColor = type === 'success' ? '#155724' : 
+                                 type === 'error' ? '#721c24' : 
+                                 type === 'warning' ? '#856404' : '#0c5460';
+                const borderColor = type === 'success' ? '#c3e6cb' : 
+                                   type === 'error' ? '#f5c6cb' : 
+                                   type === 'warning' ? '#ffeaa7' : '#bee5eb';
+
+                messageDiv.style.cssText = `
+                    background-color: ${bgColor};
+                    color: ${textColor};
+                    border: 1px solid ${borderColor};
+                    border-radius: 8px;
+                    padding: 12px 16px;
+                    margin-bottom: 10px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    animation: slideIn 0.3s ease-out;
+                    position: relative;
+                `;
+
+                messageDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                          type === 'error' ? 'fa-exclamation-circle' : 
+                                          type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}" 
+                               style="margin-right: 8px;"></i>
+                            <span>${message}</span>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: none; border: none; color: ${textColor}; cursor: pointer; font-size: 18px; padding: 0; margin-left: 10px;">
+                            ×
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(messageDiv);
+
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.remove();
+                    }
+                }, 5000);
+            }
+
+            // Add CSS animation
+            if (!document.getElementById('message-animations')) {
+                const style = document.createElement('style');
+                style.id = 'message-animations';
+                style.textContent = `
+                    @@keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Always prevent default to handle with AJAX
+                
+                let isValid = true;
+                let errorMessages = [];
+                const requiredFields = form.querySelectorAll('[required], input[name="Name"], input[name="Amount"], input[name="StartDate"], input[name="EndDate"], select[name="CategoryId"]');
+                
+                // Validate required fields
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('shake');
+                        field.style.borderColor = '#dc3545';
+                        
+                        const fieldName = field.getAttribute('name') || field.id || 'Field';
+                        errorMessages.push(`${fieldName} is required`);
+                        
+                        setTimeout(() => {
+                            field.classList.remove('shake');
+                        }, 500);
+                    } else {
+                        field.style.borderColor = '#28a745';
+                    }
+                });
+                
+                // Validate amount
+                const amountField = form.querySelector('input[name="Amount"]');
+                if (amountField && amountField.value) {
+                    const amount = parseFloat(amountField.value);
+                    if (isNaN(amount) || amount <= 0) {
+                        isValid = false;
+                        errorMessages.push('Amount must be a positive number');
+                        amountField.classList.add('shake');
+                        amountField.style.borderColor = '#dc3545';
+                        setTimeout(() => amountField.classList.remove('shake'), 500);
+                    }
+                }
+                
+                // Validate dates
+                const startDateField = form.querySelector('input[name="StartDate"]');
+                const endDateField = form.querySelector('input[name="EndDate"]');
+                if (startDateField && endDateField && startDateField.value && endDateField.value) {
+                    const startDate = new Date(startDateField.value);
+                    const endDate = new Date(endDateField.value);
+                    if (endDate <= startDate) {
+                        isValid = false;
+                        errorMessages.push('End date must be after start date');
+                        endDateField.classList.add('shake');
+                        endDateField.style.borderColor = '#dc3545';
+                        setTimeout(() => endDateField.classList.remove('shake'), 500);
+                    }
+                }
+                
+                if (!isValid) {
+                    createBtn.classList.add('shake');
+                    setTimeout(() => {
+                        createBtn.classList.remove('shake');
+                    }, 500);
+                    showMessage('Please fix the following errors: ' + errorMessages.join(', '), 'error');
+                    return;
+                }
+
+                // Show loading state
+                const originalText = createBtn.innerHTML;
+                createBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Budget...';
+                createBtn.disabled = true;
+
+                // Prepare form data
+                const formData = new FormData(form);
+                
+                // Submit via AJAX
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    }
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                })
+                .then(html => {
+                    // Check if response contains validation errors
+                    if (html.includes('field-validation-error') || html.includes('validation-summary-errors')) {
+                        showMessage('Validation errors occurred. Please check your input.', 'error');
+                        // Parse and show specific validation errors
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const errors = tempDiv.querySelectorAll('.field-validation-error, .validation-summary-errors li');
+                        if (errors.length > 0) {
+                            const errorTexts = Array.from(errors).map(e => e.textContent.trim()).filter(t => t);
+                            if (errorTexts.length > 0) {
+                                showMessage('Errors: ' + errorTexts.join(', '), 'error');
+                            }
+                        }
+                    } else if (html.includes('Budget created successfully') || response.redirected) {
+                        showMessage('Budget created successfully! 🎉', 'success');
+                        // Reset form
+                        form.reset();
+                        // Redirect after showing success message
+                        setTimeout(() => {
+                            window.location.href = '/Budget';
+                        }, 1500);
+                    } else {
+                        showMessage('Budget created successfully!', 'success');
+                        form.reset();
+                        setTimeout(() => {
+                            window.location.href = '/Budget';
+                        }, 1500);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage(`Error creating budget: ${error.message}. Please check the console for more details.`, 'error');
+                })
+                .finally(() => {
+                    // Restore button state
+                    createBtn.innerHTML = originalText;
+                    createBtn.disabled = false;
+                });
+            });
+
+            // Real-time validation feedback
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.hasAttribute('required') || this.name === 'Name' || this.name === 'Amount' || this.name === 'StartDate' || this.name === 'EndDate' || this.name === 'CategoryId') {
+                        if (this.value.trim()) {
+                            this.style.borderColor = '#28a745';
+                        } else {
+                            this.style.borderColor = '#dc3545';
+                        }
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = '#667eea';
+                });
+            });
+        });
+    </script>
+}

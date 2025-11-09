@@ -1,0 +1,416 @@
+@model SmartExpenseTracker.ViewModels.SecurityViewModel
+@{
+    ViewData["Title"] = "Security & Privacy";
+}
+
+<style>
+    .security-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 15px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .security-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+        opacity: 0.1;
+        z-index: 1;
+    }
+
+    .security-header .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .security-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .security-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    .security-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .icon-shield { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .icon-data { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .icon-export { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .icon-delete { background: linear-gradient(135deg, #fa709a, #fee140); }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+        display: block;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .action-btn {
+        border-radius: 25px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: none;
+        margin: 0.5rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .btn-primary-custom:hover {
+        background: linear-gradient(135deg, #764ba2, #667eea);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-info-custom {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: white;
+    }
+
+    .btn-info-custom:hover {
+        background: linear-gradient(135deg, #00f2fe, #4facfe);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+    }
+
+    .btn-warning-custom {
+        background: linear-gradient(135deg, #fa709a, #fee140);
+        color: white;
+    }
+
+    .btn-warning-custom:hover {
+        background: linear-gradient(135deg, #fee140, #fa709a);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(250, 112, 154, 0.4);
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: white;
+    }
+
+    .btn-danger-custom:hover {
+        background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    }
+
+    .security-status {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    .status-active { background-color: #28a745; }
+    .status-inactive { background-color: #dc3545; }
+    .status-warning { background-color: #ffc107; }
+
+    .privacy-tip {
+        background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+        border-left: 4px solid #667eea;
+        padding: 1rem;
+        border-radius: 0 10px 10px 0;
+        margin: 1rem 0;
+    }
+
+    .privacy-tip h6 {
+        color: #667eea;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .security-header {
+            padding: 2rem 0;
+        }
+        
+        .security-card {
+            padding: 1.5rem;
+        }
+        
+        .action-btn {
+            width: 100%;
+            margin: 0.25rem 0;
+        }
+    }
+</style>
+
+<div class="security-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 mb-3">
+                    <i class="fas fa-shield-alt me-3"></i>
+                    Security & Privacy Center
+                </h1>
+                <p class="lead mb-0">Manage your account security, privacy settings, and data export options</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Security" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid rgba(255,255,255,0.3);">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <!-- Account Overview -->
+        <div class="col-lg-6 mb-4">
+            <div class="security-card">
+                <div class="security-icon icon-shield">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h4 class="mb-3">Account Overview</h4>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <span class="stat-number">@Model.TotalExpenses</span>
+                            <div class="stat-label">Total Expenses</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <span class="stat-number">@Model.TotalIncome</span>
+                            <div class="stat-label">Total Income</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <span class="stat-number">@Model.TotalBudgets</span>
+                            <div class="stat-label">Total Budgets</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-item">
+                            <span class="stat-number">@((DateTime.Now - Model.AccountCreatedDate).Days)</span>
+                            <div class="stat-label">Days Active</div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-3">
+                
+                <div class="mb-2">
+                    <strong>Email:</strong> @Model.UserEmail
+                </div>
+                <div class="mb-2">
+                    <strong>Account Created:</strong> @Model.AccountCreatedDate.ToString("MMMM dd, yyyy")
+                </div>
+                <div class="mb-2">
+                    <strong>Last Login:</strong> @Model.LastLoginDate.ToString("MMMM dd, yyyy HH:mm")
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Status -->
+        <div class="col-lg-6 mb-4">
+            <div class="security-card">
+                <div class="security-icon icon-data">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h4 class="mb-3">Security Status</h4>
+                
+                <div class="security-status">
+                    <div class="status-indicator @(Model.EmailConfirmed ? "status-active" : "status-inactive")"></div>
+                    <span>Email Verification: @(Model.EmailConfirmed ? "Verified" : "Not Verified")</span>
+                </div>
+                
+                <div class="security-status">
+                    <div class="status-indicator @(Model.TwoFactorEnabled ? "status-active" : "status-warning")"></div>
+                    <span>Two-Factor Authentication: @(Model.TwoFactorEnabled ? "Enabled" : "Disabled")</span>
+                </div>
+                
+                <div class="security-status">
+                    <div class="status-indicator status-active"></div>
+                    <span>Account Status: Active</span>
+                </div>
+                
+                <div class="security-status">
+                    <div class="status-indicator status-active"></div>
+                    <span>Data Encryption: Enabled</span>
+                </div>
+
+                <div class="privacy-tip">
+                    <h6><i class="fas fa-lightbulb me-2"></i>Security Tip</h6>
+                    <p class="mb-0">Enable two-factor authentication for enhanced account security. Regular password updates are also recommended.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Data Export -->
+        <div class="col-lg-6 mb-4">
+            <div class="security-card">
+                <div class="security-icon icon-export">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h4 class="mb-3">Data Export & Backup</h4>
+                <p class="text-muted mb-3">Download your financial data for backup or migration purposes. Your data will be exported in a secure format.</p>
+                
+                <div class="privacy-tip">
+                    <h6><i class="fas fa-info-circle me-2"></i>Export Information</h6>
+                    <p class="mb-0">Exported data includes all your expenses, income, and budget records with timestamps and categories.</p>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="@Url.Action("ExportData", "Security")" class="action-btn btn-info-custom">
+                        <i class="fas fa-file-export me-2"></i>Export My Data
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="col-lg-6 mb-4">
+            <div class="security-card">
+                <div class="security-icon icon-delete">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <h4 class="mb-3">Data Management</h4>
+                <p class="text-muted mb-3">Manage your stored data with options to clear financial records or permanently delete your account.</p>
+                
+                <div class="privacy-tip">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Important Notice</h6>
+                    <p class="mb-0">Data deletion actions are permanent and cannot be undone. Please export your data before proceeding.</p>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <button type="button" class="action-btn btn-warning-custom" data-bs-toggle="modal" data-bs-target="#clearDataModal">
+                        <i class="fas fa-broom me-2"></i>Clear All Data
+                    </button>
+                    <a href="@Url.Action("DeleteAccount", "Security")" class="action-btn btn-danger-custom">
+                        <i class="fas fa-user-times me-2"></i>Delete Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="security-card">
+                <h4 class="mb-3">
+                    <i class="fas fa-user-secret me-2"></i>
+                    Privacy & Data Protection
+                </h4>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-database me-2"></i>Data Storage</h6>
+                        <p class="text-muted">Your financial data is encrypted and stored securely on our servers. We use industry-standard encryption protocols to protect your information.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-share-alt me-2"></i>Data Sharing</h6>
+                        <p class="text-muted">We never share your personal financial data with third parties. Your information remains private and confidential.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-clock me-2"></i>Data Retention</h6>
+                        <p class="text-muted">Your data is retained as long as your account is active. You can request deletion at any time through this security center.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-shield-virus me-2"></i>Security Measures</h6>
+                        <p class="text-muted">We employ multiple layers of security including SSL encryption, secure authentication, and regular security audits.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Clear Data Modal -->
+<div class="modal fade" id="clearDataModal" tabindex="-1" aria-labelledby="clearDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title" id="clearDataModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Clear All Data
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-trash-alt text-warning" style="font-size: 3rem;"></i>
+                </div>
+                <h6 class="text-center mb-3">Are you sure you want to clear all your financial data?</h6>
+                <p class="text-muted text-center">This action will permanently delete:</p>
+                <ul class="text-muted">
+                    <li>All expense records</li>
+                    <li>All income records</li>
+                    <li>All budget information</li>
+                    <li>All financial history and reports</li>
+                </ul>
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>This action cannot be undone!</strong> Consider exporting your data first.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <form asp-action="ClearAllData" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-broom me-2"></i>Clear All Data
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

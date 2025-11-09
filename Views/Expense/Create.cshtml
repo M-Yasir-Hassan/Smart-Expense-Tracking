@@ -1,0 +1,543 @@
+@model SmartExpenseTracker.Models.Expense
+
+@{
+    ViewData["Title"] = "Add New Expense";
+}
+
+<style>
+    .create-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+    }
+
+    .form-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: 1px solid #dee2e6;
+        padding: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-label i {
+        color: #667eea;
+        margin-right: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        background-color: white;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px 0 0 12px;
+        font-weight: 600;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+        border-radius: 0 12px 12px 0;
+    }
+
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .btn-secondary-gradient {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+        color: white;
+    }
+
+    .validation-summary {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border: 1px solid #f5c6cb;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .form-floating {
+        position: relative;
+    }
+
+    .floating-label {
+        position: absolute;
+        top: 0;
+        left: 1rem;
+        background: white;
+        padding: 0 0.5rem;
+        font-size: 0.875rem;
+        color: #667eea;
+        font-weight: 600;
+        transform: translateY(-50%);
+        z-index: 10;
+    }
+
+    .quick-amounts {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .quick-amount-btn {
+        background: #e9ecef;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .quick-amount-btn:hover {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+
+    @@media (max-width: 768px) {
+        .create-hero {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .form-card {
+            margin: 0 1rem;
+        }
+
+        .btn-primary-gradient, .btn-secondary-gradient {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Hero Section -->
+    <div class="create-hero">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">
+                    <i class="fas fa-plus-circle me-3"></i>Add New Expense
+                </h1>
+                <p class="mb-0 opacity-75">Record a new expense to track your spending</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a asp-action="Index" class="btn btn-light btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Expenses
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card">
+                <div class="form-header">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="fas fa-receipt me-2 text-primary"></i>Expense Details
+                    </h5>
+                    <small class="text-muted">Fill in the information below to record your expense</small>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="validation-summary text-danger mb-3"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Title" class="form-label">
+                                        <i class="fas fa-tag"></i>Expense Title
+                                    </label>
+                                    <input asp-for="Title" class="form-control" placeholder="e.g., Grocery shopping, Gas, Coffee" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Amount" class="form-label">
+<i class="fas fa-pound-sign"></i>Amount
+                                    </label>
+                                    <div class="input-group">
+<span class="input-group-text">£</span>
+                                        <input asp-for="Amount" class="form-control" placeholder="0.00" step="0.01" id="amountInput" />
+                                    </div>
+                                    <div class="quick-amounts">
+<span class="quick-amount-btn" onclick="setAmount(5)">£5</span>
+<span class="quick-amount-btn" onclick="setAmount(10)">£10</span>
+<span class="quick-amount-btn" onclick="setAmount(25)">£25</span>
+<span class="quick-amount-btn" onclick="setAmount(50)">£50</span>
+<span class="quick-amount-btn" onclick="setAmount(100)">£100</span>
+                                    </div>
+                                    <span asp-validation-for="Amount" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Date" class="form-label">
+                                        <i class="fas fa-calendar"></i>Date
+                                    </label>
+                                    <input asp-for="Date" class="form-control" type="date" />
+                                    <span asp-validation-for="Date" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="CategoryId" class="form-label">
+                                        <i class="fas fa-list"></i>Category
+                                    </label>
+                                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                                        <option value="">-- Select a Category --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description" class="form-label">
+                                <i class="fas fa-comment"></i>Description <small class="text-muted">(Optional)</small>
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Add any additional details about this expense (receipt number, location, notes, etc.)"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between flex-wrap gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-secondary-gradient">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary-gradient">
+                                <i class="fas fa-save me-2"></i>Save Expense
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Set default date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            var today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[type="date"]').value = today;
+        });
+
+        // Quick amount buttons functionality
+        function setAmount(amount) {
+            document.getElementById('amountInput').value = amount.toFixed(2);
+            document.getElementById('amountInput').focus();
+        }
+
+        // Create message container for frontend feedback
+        function createMessageContainer() {
+            let messageContainer = document.getElementById('frontend-messages');
+            if (!messageContainer) {
+                messageContainer = document.createElement('div');
+                messageContainer.id = 'frontend-messages';
+                messageContainer.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 9999;
+                    max-width: 400px;
+                `;
+                document.body.appendChild(messageContainer);
+            }
+            return messageContainer;
+        }
+
+        // Show message function
+        function showMessage(message, type = 'info') {
+            const container = createMessageContainer();
+            const messageDiv = document.createElement('div');
+            
+            const bgColor = type === 'success' ? '#d4edda' : 
+                           type === 'error' ? '#f8d7da' : 
+                           type === 'warning' ? '#fff3cd' : '#d1ecf1';
+            const textColor = type === 'success' ? '#155724' : 
+                             type === 'error' ? '#721c24' : 
+                             type === 'warning' ? '#856404' : '#0c5460';
+            const borderColor = type === 'success' ? '#c3e6cb' : 
+                               type === 'error' ? '#f5c6cb' : 
+                               type === 'warning' ? '#ffeaa7' : '#bee5eb';
+
+            messageDiv.style.cssText = `
+                background-color: ${bgColor};
+                color: ${textColor};
+                border: 1px solid ${borderColor};
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin-bottom: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                animation: slideIn 0.3s ease-out;
+                position: relative;
+            `;
+
+            messageDiv.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                      type === 'error' ? 'fa-exclamation-circle' : 
+                                      type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}" 
+                           style="margin-right: 8px;"></i>
+                        <span>${message}</span>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: none; border: none; color: ${textColor}; cursor: pointer; font-size: 18px; padding: 0; margin-left: 10px;">
+                        ×
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(messageDiv);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Form validation enhancements
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Always prevent default to handle with AJAX
+            
+            let isValid = true;
+            let errorMessages = [];
+            const form = this;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            const title = document.querySelector('input[name="Title"]').value.trim();
+            const amount = document.querySelector('input[name="Amount"]').value;
+            const category = document.querySelector('select[name="CategoryId"]').value;
+            const date = document.querySelector('input[name="Date"]').value;
+
+            // Validate required fields
+            if (!title) {
+                isValid = false;
+                errorMessages.push('Title is required');
+                const titleField = document.querySelector('input[name="Title"]');
+                titleField.style.borderColor = '#dc3545';
+                titleField.classList.add('shake');
+                setTimeout(() => titleField.classList.remove('shake'), 500);
+            } else {
+                document.querySelector('input[name="Title"]').style.borderColor = '#28a745';
+            }
+
+            if (!amount) {
+                isValid = false;
+                errorMessages.push('Amount is required');
+                const amountField = document.querySelector('input[name="Amount"]');
+                amountField.style.borderColor = '#dc3545';
+                amountField.classList.add('shake');
+                setTimeout(() => amountField.classList.remove('shake'), 500);
+            } else {
+                const amountValue = parseFloat(amount);
+                if (isNaN(amountValue) || amountValue <= 0) {
+                    isValid = false;
+                    errorMessages.push('Amount must be a positive number');
+                    const amountField = document.querySelector('input[name="Amount"]');
+                    amountField.style.borderColor = '#dc3545';
+                    amountField.classList.add('shake');
+                    setTimeout(() => amountField.classList.remove('shake'), 500);
+                } else {
+                    document.querySelector('input[name="Amount"]').style.borderColor = '#28a745';
+                }
+            }
+
+            if (!category) {
+                isValid = false;
+                errorMessages.push('Category is required');
+                const categoryField = document.querySelector('select[name="CategoryId"]');
+                categoryField.style.borderColor = '#dc3545';
+                categoryField.classList.add('shake');
+                setTimeout(() => categoryField.classList.remove('shake'), 500);
+            } else {
+                document.querySelector('select[name="CategoryId"]').style.borderColor = '#28a745';
+            }
+
+            if (!date) {
+                isValid = false;
+                errorMessages.push('Date is required');
+                const dateField = document.querySelector('input[name="Date"]');
+                dateField.style.borderColor = '#dc3545';
+                dateField.classList.add('shake');
+                setTimeout(() => dateField.classList.remove('shake'), 500);
+            } else {
+                document.querySelector('input[name="Date"]').style.borderColor = '#28a745';
+            }
+
+            if (!isValid) {
+                // Add shake animation to form
+                form.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    form.style.animation = '';
+                }, 500);
+                
+                showMessage('Please fix the following errors: ' + errorMessages.join(', '), 'error');
+                
+                // Focus on first empty field
+                if (!title) document.querySelector('input[name="Title"]').focus();
+                else if (!amount) document.querySelector('input[name="Amount"]').focus();
+                else if (!category) document.querySelector('select[name="CategoryId"]').focus();
+                else if (!date) document.querySelector('input[name="Date"]').focus();
+                
+                return;
+            }
+
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving Expense...';
+            submitBtn.disabled = true;
+
+            // Prepare form data
+            const formData = new FormData(form);
+            
+            // Submit via AJAX
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            })
+            .then(html => {
+                // Check if response contains validation errors
+                if (html.includes('field-validation-error') || html.includes('validation-summary-errors')) {
+                    showMessage('Validation errors occurred. Please check your input.', 'error');
+                    // Parse and show specific validation errors
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    const errors = tempDiv.querySelectorAll('.field-validation-error, .validation-summary-errors li');
+                    if (errors.length > 0) {
+                        const errorTexts = Array.from(errors).map(e => e.textContent.trim()).filter(t => t);
+                        if (errorTexts.length > 0) {
+                            showMessage('Errors: ' + errorTexts.join(', '), 'error');
+                        }
+                    }
+                } else if (html.includes('Expense saved successfully') || response.redirected) {
+                    showMessage('Expense saved successfully! 🎉', 'success');
+                    // Reset form
+                    form.reset();
+                    // Set default date again
+                    var today = new Date().toISOString().split('T')[0];
+                    document.querySelector('input[type="date"]').value = today;
+                    // Redirect after showing success message
+                    setTimeout(() => {
+                        window.location.href = '/Expense';
+                    }, 1500);
+                } else {
+                    showMessage('Expense created successfully!', 'success');
+                    form.reset();
+                    var today = new Date().toISOString().split('T')[0];
+                    document.querySelector('input[type="date"]').value = today;
+                    setTimeout(() => {
+                        window.location.href = '/Expense';
+                    }, 1500);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage(`Error creating expense: ${error.message}. Please check the console for more details.`, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+
+        // Add shake animation keyframes and slide-in animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes shake {
+                0%, 20%, 40%, 60%, 80% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            }
+            @@keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+}

@@ -1,0 +1,343 @@
+@model SmartExpenseTracker.Models.Expense
+
+@{
+    ViewData["Title"] = "Edit Expense";
+}
+
+<style>
+    .edit-hero {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(240, 147, 251, 0.3);
+    }
+
+    .form-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-bottom: 1px solid #ffeaa7;
+        padding: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-label i {
+        color: #f5576c;
+        margin-right: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #f5576c;
+        box-shadow: 0 0 0 0.2rem rgba(245, 87, 108, 0.25);
+        background-color: white;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border: none;
+        border-radius: 12px 0 0 12px;
+        font-weight: 600;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+        border-radius: 0 12px 12px 0;
+    }
+
+    .btn-warning-gradient {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-warning-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(245, 87, 108, 0.3);
+        color: white;
+    }
+
+    .btn-secondary-gradient {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+        color: white;
+    }
+
+    .validation-summary {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border: 1px solid #f5c6cb;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .quick-amounts {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .quick-amount-btn {
+        background: #e9ecef;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .quick-amount-btn:hover {
+        background: #f5576c;
+        color: white;
+        border-color: #f5576c;
+    }
+
+    .expense-info {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #2196f3;
+    }
+
+    .expense-info h6 {
+        color: #1976d2;
+        margin-bottom: 0.5rem;
+    }
+
+    .expense-info small {
+        color: #424242;
+    }
+
+    @@media (max-width: 768px) {
+        .edit-hero {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .form-card {
+            margin: 0 1rem;
+        }
+
+        .btn-warning-gradient, .btn-secondary-gradient {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Hero Section -->
+    <div class="edit-hero">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">
+                    <i class="fas fa-edit me-3"></i>Edit Expense
+                </h1>
+                <p class="mb-0 opacity-75">Update your expense details</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a asp-action="Index" class="btn btn-light btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Expenses
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card">
+                <div class="form-header">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="fas fa-receipt me-2 text-warning"></i>Update Expense Details
+                    </h5>
+                    <small class="text-muted">Modify the information below to update your expense</small>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Expense Info -->
+                    <div class="expense-info">
+                        <h6><i class="fas fa-info-circle me-2"></i>Expense Information</h6>
+                        <small>
+                            <strong>Created:</strong> @Model.CreatedDate.ToString("MMM dd, yyyy 'at' h:mm tt") |
+                            <strong>ID:</strong> #@Model.Id
+                        </small>
+                    </div>
+
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="validation-summary text-danger mb-3"></div>
+                        
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="UserId" />
+                        <input type="hidden" asp-for="CreatedDate" />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Title" class="form-label">
+                                        <i class="fas fa-tag"></i>Expense Title
+                                    </label>
+                                    <input asp-for="Title" class="form-control" placeholder="e.g., Grocery shopping, Gas, Coffee" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Amount" class="form-label">
+<i class="fas fa-pound-sign"></i>Amount
+                                    </label>
+                                    <div class="input-group">
+<span class="input-group-text">£</span>
+                                        <input asp-for="Amount" class="form-control" placeholder="0.00" step="0.01" id="amountInput" />
+                                    </div>
+                                    <div class="quick-amounts">
+<span class="quick-amount-btn" onclick="setAmount(5)">£5</span>
+<span class="quick-amount-btn" onclick="setAmount(10)">£10</span>
+<span class="quick-amount-btn" onclick="setAmount(25)">£25</span>
+<span class="quick-amount-btn" onclick="setAmount(50)">£50</span>
+<span class="quick-amount-btn" onclick="setAmount(100)">£100</span>
+                                    </div>
+                                    <span asp-validation-for="Amount" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Date" class="form-label">
+                                        <i class="fas fa-calendar"></i>Date
+                                    </label>
+                                    <input asp-for="Date" class="form-control" type="date" />
+                                    <span asp-validation-for="Date" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="CategoryId" class="form-label">
+                                        <i class="fas fa-list"></i>Category
+                                    </label>
+                                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                                        <option value="">-- Select a Category --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Description" class="form-label">
+                                <i class="fas fa-comment"></i>Description <small class="text-muted">(Optional)</small>
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Add any additional details about this expense (receipt number, location, notes, etc.)"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between flex-wrap gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-secondary-gradient">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning-gradient">
+                                <i class="fas fa-save me-2"></i>Update Expense
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Quick amount buttons functionality
+        function setAmount(amount) {
+            document.getElementById('amountInput').value = amount.toFixed(2);
+            document.getElementById('amountInput').focus();
+        }
+
+        // Form validation enhancements
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const title = document.querySelector('input[name="Title"]').value.trim();
+            const amount = document.querySelector('input[name="Amount"]').value;
+            const category = document.querySelector('select[name="CategoryId"]').value;
+
+            if (!title || !amount || !category) {
+                e.preventDefault();
+                
+                // Add shake animation to form
+                const form = this;
+                form.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    form.style.animation = '';
+                }, 500);
+
+                // Focus on first empty field
+                if (!title) document.querySelector('input[name="Title"]').focus();
+                else if (!amount) document.querySelector('input[name="Amount"]').focus();
+                else if (!category) document.querySelector('select[name="CategoryId"]').focus();
+            }
+        });
+
+        // Add shake animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes shake {
+                0%, 20%, 40%, 60%, 80% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+}

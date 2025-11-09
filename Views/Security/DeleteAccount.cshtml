@@ -1,0 +1,410 @@
+@{
+    ViewData["Title"] = "Delete Account";
+}
+
+<style>
+    .delete-header {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 15px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .delete-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+        opacity: 0.1;
+        z-index: 1;
+    }
+
+    .delete-header .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: none;
+    }
+
+    .warning-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: white;
+        margin: 0 auto 2rem;
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .danger-alert {
+        background: linear-gradient(135deg, #ffe6e6, #ffcccc);
+        border: 2px solid #ff6b6b;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .danger-alert h6 {
+        color: #dc3545;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .consequences-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .consequences-list li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #ffcccc;
+        display: flex;
+        align-items: center;
+    }
+
+    .consequences-list li:last-child {
+        border-bottom: none;
+    }
+
+    .consequences-list i {
+        color: #dc3545;
+        margin-right: 1rem;
+        width: 20px;
+        font-size: 18px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2rem;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-danger-custom:hover {
+        background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2rem;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary-custom:hover {
+        background: linear-gradient(135deg, #495057, #6c757d);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-export-custom {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2rem;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-export-custom:hover {
+        background: linear-gradient(135deg, #00f2fe, #4facfe);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .alternatives-box {
+        background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+        border-left: 4px solid #28a745;
+        padding: 1.5rem;
+        border-radius: 0 10px 10px 0;
+        margin: 1.5rem 0;
+    }
+
+    .alternatives-box h6 {
+        color: #28a745;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .alternative-option {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .alternative-option:hover {
+        border-color: #28a745;
+        box-shadow: 0 2px 10px rgba(40, 167, 69, 0.1);
+    }
+
+    .confirmation-checkbox {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .confirmation-checkbox label {
+        font-weight: 600;
+        color: #856404;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .confirmation-checkbox input[type="checkbox"] {
+        margin-right: 1rem;
+        transform: scale(1.2);
+    }
+
+    @@media (max-width: 768px) {
+        .delete-header {
+            padding: 2rem 0;
+        }
+        
+        .delete-card {
+            padding: 1.5rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .action-buttons a,
+        .action-buttons button {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+</style>
+
+<div class="delete-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 mb-3">
+                    <i class="fas fa-user-times me-3"></i>
+                    Delete Account
+                </h1>
+                <p class="lead mb-0">Permanently remove your account and all associated data</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Account Deletion" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid rgba(255,255,255,0.3);">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="delete-card text-center">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                
+                <h2 class="text-danger mb-3">⚠️ PERMANENT ACCOUNT DELETION</h2>
+                <p class="lead text-muted mb-4">This action cannot be undone and will result in the complete loss of all your data.</p>
+
+                <div class="danger-alert">
+                    <h6><i class="fas fa-skull-crossbones me-2"></i>What Will Be Permanently Deleted</h6>
+                    <ul class="consequences-list">
+                        <li>
+                            <i class="fas fa-credit-card"></i>
+                            <span>All expense records and transaction history</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-coins"></i>
+                            <span>All income records and earnings data</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-chart-pie"></i>
+                            <span>All budget plans and financial goals</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-chart-line"></i>
+                            <span>All reports, analytics, and insights</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-tags"></i>
+                            <span>All custom categories and preferences</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-user"></i>
+                            <span>Your user account and login credentials</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-history"></i>
+                            <span>All historical data and audit trails</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="alternatives-box text-start">
+                    <h6><i class="fas fa-lightbulb me-2"></i>Consider These Alternatives First</h6>
+                    
+                    <div class="alternative-option">
+                        <h6><i class="fas fa-broom me-2"></i>Clear Data Only</h6>
+                        <p class="mb-0 text-muted">Keep your account but remove all financial data. You can start fresh while maintaining your login credentials.</p>
+                    </div>
+                    
+                    <div class="alternative-option">
+                        <h6><i class="fas fa-download me-2"></i>Export Before Deleting</h6>
+                        <p class="mb-0 text-muted">Download your data for backup purposes before proceeding with account deletion.</p>
+                    </div>
+                    
+                    <div class="alternative-option">
+                        <h6><i class="fas fa-pause me-2"></i>Take a Break</h6>
+                        <p class="mb-0 text-muted">Simply stop using the application. Your data will remain safe and you can return anytime.</p>
+                    </div>
+                </div>
+
+                <div class="confirmation-checkbox">
+                    <label>
+                        <input type="checkbox" id="confirmDeletion" onchange="toggleDeleteButton()">
+                        I understand that this action is permanent and irreversible. I want to delete my account and all associated data.
+                    </label>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="@Url.Action("Index", "Security")" class="btn-secondary-custom">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Cancel & Go Back
+                    </a>
+                    
+                    <a href="@Url.Action("ExportData", "Security")" class="btn-export-custom">
+                        <i class="fas fa-download me-2"></i>
+                        Export Data First
+                    </a>
+                    
+                    <form asp-action="DeleteAccountConfirmed" method="post" style="display: inline;" onsubmit="return confirmFinalDeletion()">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" id="deleteButton" class="btn-danger-custom" disabled>
+                            <i class="fas fa-trash-alt me-2"></i>
+                            Delete My Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="row">
+        <div class="col-12">
+            <div class="delete-card">
+                <h5 class="mb-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Important Information About Account Deletion
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-clock me-2"></i>Immediate Effect</h6>
+                        <p class="text-muted">Account deletion takes effect immediately. You will be logged out and unable to access your account.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-shield-alt me-2"></i>Data Security</h6>
+                        <p class="text-muted">All your data is securely deleted from our servers and cannot be recovered by anyone, including our support team.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-envelope me-2"></i>Email Address</h6>
+                        <p class="text-muted">Your email address will be available for registration again after account deletion is complete.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-undo me-2"></i>No Recovery</h6>
+                        <p class="text-muted">There is no way to recover your account or data once deletion is confirmed. This decision is final.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleDeleteButton() {
+        const checkbox = document.getElementById('confirmDeletion');
+        const deleteButton = document.getElementById('deleteButton');
+        
+        if (checkbox.checked) {
+            deleteButton.disabled = false;
+            deleteButton.style.opacity = '1';
+        } else {
+            deleteButton.disabled = true;
+            deleteButton.style.opacity = '0.5';
+        }
+    }
+
+    function confirmFinalDeletion() {
+        return confirm('This is your final warning! Are you absolutely sure you want to permanently delete your account and all data? This action cannot be undone.');
+    }
+
+    // Initialize button state
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleDeleteButton();
+    });
+</script>

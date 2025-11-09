@@ -1,0 +1,829 @@
+@model SmartExpenseTracker.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<style>
+    .dashboard-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin: -30px -30px 2rem -30px;
+        border-radius: 0 0 30px 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><path d="M0,0v46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1047.71,8.15,1100,25V0H0Z"/></svg>') center/cover;
+        z-index: 1;
+    }
+
+    .dashboard-hero .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+
+    .quick-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .quick-action-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .quick-action-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--card-gradient);
+    }
+
+    .stat-card.income::before { 
+        background: linear-gradient(135deg, #10b981, #059669); 
+    }
+    .stat-card.expense::before { 
+        background: linear-gradient(135deg, #ef4444, #dc2626); 
+    }
+    .stat-card.budget::before { 
+        background: linear-gradient(135deg, #6366f1, #4f46e5); 
+    }
+    .stat-card.savings::before { 
+        background: linear-gradient(135deg, #f59e0b, #d97706); 
+    }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+    }
+
+    .icon-income { background: linear-gradient(135deg, #10b981, #059669); }
+    .icon-expense { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .icon-budget { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+    .icon-savings { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+    .stat-menu {
+        position: relative;
+    }
+
+    .stat-menu-btn {
+        background: none;
+        border: none;
+        color: #6b7280;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .stat-menu-btn:hover {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .stat-change {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        width: fit-content;
+    }
+
+    .stat-change.positive { 
+        color: #059669; 
+        background: rgba(16, 185, 129, 0.1);
+    }
+    .stat-change.negative { 
+        color: #dc2626; 
+        background: rgba(239, 68, 68, 0.1);
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .chart-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .chart-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .chart-period {
+        display: flex;
+        background: #f3f4f6;
+        border-radius: 8px;
+        padding: 0.25rem;
+    }
+
+    .period-btn {
+        background: none;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .period-btn.active {
+        background: white;
+        color: #111827;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-container {
+        position: relative;
+        height: 350px;
+        margin: 1rem 0;
+    }
+
+    .transactions-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .transactions-header {
+        display: flex;
+        align-items: center;
+        justify-content: between;
+        margin-bottom: 1.5rem;
+    }
+
+    .transactions-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .view-all-btn {
+        color: #6366f1;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: color 0.2s ease;
+    }
+
+    .view-all-btn:hover {
+        color: #4f46e5;
+    }
+
+    .recent-transactions {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .transaction-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f3f4f6;
+        transition: all 0.2s ease;
+    }
+
+    .transaction-item:hover {
+        background: #f9fafb;
+        margin: 0 -1rem;
+        padding: 1rem;
+        border-radius: 12px;
+        border-bottom: 1px solid transparent;
+    }
+
+    .transaction-item:last-child {
+        border-bottom: none;
+    }
+
+    .transaction-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: white;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .transaction-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .transaction-title {
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    .transaction-category {
+        color: #6b7280;
+        font-size: 0.75rem;
+    }
+
+    .transaction-amount {
+        font-weight: 700;
+        font-size: 0.875rem;
+        text-align: right;
+    }
+
+    .transaction-date {
+        color: #9ca3af;
+        font-size: 0.75rem;
+        text-align: right;
+        margin-top: 0.25rem;
+    }
+
+    .amount-positive { color: #059669; }
+    .amount-negative { color: #dc2626; }
+
+    @@media (max-width: 768px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .quick-actions {
+            justify-content: center;
+        }
+    }
+</style>
+
+<!-- Dashboard Hero Section -->
+<div class="dashboard-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title">
+                    <i class="fas fa-chart-line me-3"></i>
+                    Welcome back, @User.Identity.Name!
+                </h1>
+                <p class="hero-subtitle">Here's your financial overview for @Model.CurrentMonth</p>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <a href="/Expense/Create" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Add Expense
+                    </a>
+                    <a href="/Income/Create" class="btn btn-success btn-lg">
+                        <i class="fas fa-plus me-2"></i>Add Income
+                    </a>
+                    <a href="/Budget/Create" class="btn btn-info btn-lg">
+                        <i class="fas fa-plus me-2"></i>Create Budget
+                    </a>
+                    <a href="/Reports" class="btn btn-warning btn-lg">
+                        <i class="fas fa-chart-bar me-2"></i>View Reports
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="hero-image">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid px-4">
+    <!-- Financial Summary Alert -->
+    <div class="alert alert-info border-0 shadow-sm mb-4" style="border-radius: 15px;">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-info-circle me-3 fs-4"></i>
+            <div>
+                <h6 class="mb-1">Financial Summary</h6>
+                <p class="mb-0">
+                    @if (Model.NetIncome >= 0)
+                    {
+<span class="text-success fw-bold">Great job! You're saving £@Model.NetIncome.ToString("N2") this month.</span>
+                    }
+                    else
+                    {
+<span class="text-warning fw-bold">You're spending £@Math.Abs(Model.NetIncome).ToString("N2") more than you earn this month.</span>
+                    }
+                    Your savings rate is <strong>@Model.SavingsRate.ToString("F1")%</strong>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card income">
+            <div class="stat-icon">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">@Model.TotalIncome.ToString("C")</div>
+                <div class="stat-label">Total Income</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +12.5% from last month
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card expense">
+            <div class="stat-icon">
+                <i class="fas fa-arrow-down"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">@Model.TotalExpenses.ToString("C")</div>
+                <div class="stat-label">Total Expenses</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    +5.2% from last month
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card @(Model.NetIncome >= 0 ? "budget" : "expense")">
+            <div class="stat-icon">
+                <i class="fas fa-@(Model.NetIncome >= 0 ? "piggy-bank" : "exclamation-triangle")"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">@Model.NetIncome.ToString("C")</div>
+                <div class="stat-label">Net Income</div>
+                <div class="stat-change @(Model.NetIncome >= 0 ? "positive" : "negative")">
+                    <i class="fas fa-@(Model.NetIncome >= 0 ? "arrow-up" : "arrow-down")"></i>
+                    @(Model.NetIncome >= 0 ? "Profit" : "Loss") this month
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card savings">
+            <div class="stat-icon">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">@Model.SavingsRate.ToString("F1")%</div>
+                <div class="stat-label">Savings Rate</div>
+                <div class="stat-change @(Model.SavingsRate >= 20 ? "positive" : Model.SavingsRate >= 10 ? "neutral" : "negative")">
+                    <i class="fas fa-@(Model.SavingsRate >= 20 ? "thumbs-up" : Model.SavingsRate >= 10 ? "minus" : "thumbs-down")"></i>
+                    @(Model.SavingsRate >= 20 ? "Excellent" : Model.SavingsRate >= 10 ? "Good" : "Needs Improvement")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+        <!-- Expense Breakdown Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Expense Breakdown
+                </h3>
+                <div class="chart-period">
+                    <button class="period-btn active">This Month</button>
+                    <button class="period-btn">Last Month</button>
+                    <button class="period-btn">3 Months</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                @if (Model.ExpensesByCategory.Any())
+                {
+                    <canvas id="expenseChart" width="400" height="300"></canvas>
+                }
+                else
+                {
+                    <div class="no-data">
+                        <i class="fas fa-chart-pie"></i>
+                        <p>No expense data available</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Income Breakdown Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Income Sources
+                </h3>
+                <div class="chart-period">
+                    <button class="period-btn active">This Month</button>
+                    <button class="period-btn">Last Month</button>
+                    <button class="period-btn">3 Months</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                @if (Model.IncomeByCategory.Any())
+                {
+                    <canvas id="incomeChart" width="400" height="300"></canvas>
+                }
+                else
+                {
+                    <div class="no-data">
+                        <i class="fas fa-chart-bar"></i>
+                        <p>No income data available</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Trend Chart -->
+    @if (Model.MonthlyTrends.Any())
+    {
+        <div class="chart-card full-width">
+            <div class="chart-header">
+                <h3 class="chart-title">
+                    <i class="fas fa-chart-line"></i>
+                    Financial Trend
+                </h3>
+                <div class="chart-period">
+                    <button class="period-btn active">6 Months</button>
+                    <button class="period-btn">1 Year</button>
+                    <button class="period-btn">All Time</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="trendChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    }
+
+    <!-- Budget Performance -->
+    @if (Model.BudgetAnalysis.Any())
+    {
+        <div class="chart-card full-width">
+            <div class="chart-header">
+                <h3 class="chart-title">
+                    <i class="fas fa-bullseye"></i>
+                    Budget Performance
+                </h3>
+                <div class="chart-period">
+                    <button class="period-btn active">This Month</button>
+                    <button class="period-btn">Last Month</button>
+                    <button class="period-btn">Quarter</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div class="budget-grid">
+                    @foreach (var budget in Model.BudgetAnalysis)
+                    {
+                        <div class="budget-item">
+                            <div class="budget-header">
+                                <h4 class="budget-name">@budget.BudgetName</h4>
+                                <span class="budget-status @(budget.IsOverBudget ? "over-budget" : "on-track")">
+                                    @(budget.IsOverBudget ? "Over Budget" : "On Track")
+                                </span>
+                            </div>
+                            <div class="budget-progress">
+                                <div class="progress-info">
+                                    <span class="spent">@budget.SpentAmount.ToString("C")</span>
+                                    <span class="total">of @budget.BudgetAmount.ToString("C")</span>
+                                    <span class="percentage">@budget.PercentageUsed.ToString("F0")%</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar @(budget.IsOverBudget ? "over" : "normal")" 
+                                         style="width: @Math.Min(budget.PercentageUsed, 100)%"></div>
+                                </div>
+                                <div class="remaining">
+                                    Remaining: <span class="@(budget.RemainingAmount >= 0 ? "positive" : "negative")">
+                                        @budget.RemainingAmount.ToString("C")
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Recent Transactions -->
+    <div class="transactions-card">
+        <div class="transactions-header">
+            <h3 class="transactions-title">
+                <i class="fas fa-history"></i>
+                Recent Transactions
+            </h3>
+            <a href="/Expense" class="view-all-btn">
+                <i class="fas fa-arrow-right"></i>
+                View All
+            </a>
+        </div>
+        
+        <div class="recent-transactions">
+            @if (Model.RecentExpenses.Any())
+            {
+                @foreach (var expense in Model.RecentExpenses)
+                {
+                    <div class="transaction-item">
+                        <div class="transaction-icon" style="background-color: @expense.Category.Color;">
+                            <i class="@expense.Category.Icon"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">@expense.Title</div>
+                            <div class="transaction-category">@expense.Category.Name</div>
+                        </div>
+                        <div class="transaction-amount amount-negative">
+                            -@expense.Amount.ToString("C")
+                        </div>
+                        <div class="transaction-date">
+                            @expense.Date.ToString("MMM dd")
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-transactions">
+                    <i class="fas fa-receipt"></i>
+                    <p>No recent transactions</p>
+                    <a href="/Expense/Create" class="btn btn-primary">Add First Expense</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Expense Chart
+    @if (Model.ExpensesByCategory.Any())
+    {
+        <text>
+        const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+        const expenseChart = new Chart(expenseCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.ExpensesByCategory.Select(c => $"'{c.CategoryName}'")))],
+                datasets: [{
+                    data: [@string.Join(",", Model.ExpensesByCategory.Select(c => c.Amount))],
+                    backgroundColor: [@Html.Raw(string.Join(",", Model.ExpensesByCategory.Select(c => $"'{c.Color}'")))],
+                    borderWidth: 0,
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+        </text>
+    }
+
+    // Income Chart
+    @if (Model.IncomeByCategory.Any())
+    {
+        <text>
+        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        const incomeChart = new Chart(incomeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.IncomeByCategory.Select(c => $"'{c.CategoryName}'")))],
+                datasets: [{
+                    data: [@string.Join(",", Model.IncomeByCategory.Select(c => c.Amount))],
+                    backgroundColor: [@Html.Raw(string.Join(",", Model.IncomeByCategory.Select(c => $"'{c.Color}'")))],
+                    borderWidth: 0,
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+        </text>
+    }
+
+    // Trend Chart
+    @if (Model.MonthlyTrends.Any())
+    {
+        <text>
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        const trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.MonthlyTrends.Select(t => $"'{t.Month}'")))],
+                datasets: [{
+                    label: 'Income',
+                    data: [@string.Join(",", Model.MonthlyTrends.Select(t => t.Income))],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }, {
+                    label: 'Expenses',
+                    data: [@string.Join(",", Model.MonthlyTrends.Select(t => t.Expenses))],
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#ef4444',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+    return '£' + value.toLocaleString();
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    }
+                }
+            }
+        });
+        </text>
+    }
+
+    // Period button functionality
+    document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from siblings
+            this.parentNode.querySelectorAll('.period-btn').forEach(sibling => {
+                sibling.classList.remove('active');
+            });
+            // Add active class to clicked button
+            this.classList.add('active');
+        });
+    });
+</script>

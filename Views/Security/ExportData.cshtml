@@ -1,0 +1,332 @@
+@{
+    ViewData["Title"] = "Export Data";
+}
+
+<style>
+    .export-header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 15px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .export-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+        opacity: 0.1;
+        z-index: 1;
+    }
+
+    .export-header .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .export-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .export-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    .format-option {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .format-option:hover {
+        border-color: #4facfe;
+        background: #f8f9ff;
+    }
+
+    .format-option.selected {
+        border-color: #4facfe;
+        background: linear-gradient(135deg, #f8f9ff, #e3f2fd);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.2);
+    }
+
+    .format-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .icon-csv { background: linear-gradient(135deg, #28a745, #20c997); }
+    .icon-json { background: linear-gradient(135deg, #007bff, #6610f2); }
+    .icon-excel { background: linear-gradient(135deg, #198754, #20c997); }
+
+    .export-btn {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 3rem;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .export-btn:hover {
+        background: linear-gradient(135deg, #00f2fe, #4facfe);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        color: white;
+    }
+
+    .back-btn {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        border: none;
+        border-radius: 25px;
+        padding: 0.75rem 2rem;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .back-btn:hover {
+        background: linear-gradient(135deg, #495057, #6c757d);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+        border-left: 4px solid #4facfe;
+        padding: 1.5rem;
+        border-radius: 0 10px 10px 0;
+        margin: 1.5rem 0;
+    }
+
+    .info-box h6 {
+        color: #4facfe;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .feature-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .feature-list li:last-child {
+        border-bottom: none;
+    }
+
+    .feature-list i {
+        color: #4facfe;
+        margin-right: 0.5rem;
+        width: 20px;
+    }
+
+    @@media (max-width: 768px) {
+        .export-header {
+            padding: 2rem 0;
+        }
+        
+        .export-card {
+            padding: 1.5rem;
+        }
+        
+        .format-option {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<div class="export-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 mb-3">
+                    <i class="fas fa-file-export me-3"></i>
+                    Export Your Data
+                </h1>
+                <p class="lead mb-0">Download your financial data in your preferred format for backup or analysis</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                     alt="Data Export" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid rgba(255,255,255,0.3);">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="export-card">
+                <h4 class="mb-4 text-center">
+                    <i class="fas fa-download me-2"></i>
+                    Choose Export Format
+                </h4>
+
+                <form asp-action="ExportData" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="format-option" onclick="selectFormat('csv')">
+                                <input type="radio" name="format" value="csv" id="csv" style="display: none;">
+                                <div class="format-icon icon-csv">
+                                    <i class="fas fa-file-csv"></i>
+                                </div>
+                                <h5>CSV Format</h5>
+                                <p class="text-muted mb-0">Comma-separated values, perfect for Excel and spreadsheet applications</p>
+                                <ul class="feature-list mt-2">
+                                    <li><i class="fas fa-check"></i>Excel compatible</li>
+                                    <li><i class="fas fa-check"></i>Easy to analyze</li>
+                                    <li><i class="fas fa-check"></i>Lightweight format</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="format-option selected" onclick="selectFormat('json')">
+                                <input type="radio" name="format" value="json" id="json" checked style="display: none;">
+                                <div class="format-icon icon-json">
+                                    <i class="fas fa-file-code"></i>
+                                </div>
+                                <h5>JSON Format</h5>
+                                <p class="text-muted mb-0">JavaScript Object Notation, ideal for developers and data processing</p>
+                                <ul class="feature-list mt-2">
+                                    <li><i class="fas fa-check"></i>Developer friendly</li>
+                                    <li><i class="fas fa-check"></i>Structured data</li>
+                                    <li><i class="fas fa-check"></i>API compatible</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h6><i class="fas fa-info-circle me-2"></i>What's Included in Your Export</h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-credit-card"></i>All Expenses</li>
+                                    <li><i class="fas fa-coins"></i>All Income</li>
+                                    <li><i class="fas fa-chart-pie"></i>All Budgets</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-tags"></i>Categories</li>
+                                    <li><i class="fas fa-calendar"></i>Dates & Times</li>
+                                    <li><i class="fas fa-edit"></i>Descriptions</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-clock"></i>Creation Dates</li>
+                                    <li><i class="fas fa-history"></i>Modification History</li>
+                                    <li><i class="fas fa-pound-sign"></i>Amount Details</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h6><i class="fas fa-shield-alt me-2"></i>Privacy & Security</h6>
+                        <p class="mb-0">Your exported data is generated securely and contains only your personal financial information. The export process is encrypted and no data is stored on our servers during the export process.</p>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="export-btn">
+                            <i class="fas fa-download me-2"></i>
+                            Export My Data
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a href="@Url.Action("Index", "Security")" class="back-btn">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Security Center
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Tips -->
+    <div class="row">
+        <div class="col-12">
+            <div class="export-card">
+                <h5 class="mb-3">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Export Tips & Best Practices
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-save me-2"></i>Regular Backups</h6>
+                        <p class="text-muted">Export your data regularly to maintain up-to-date backups of your financial information.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-lock me-2"></i>Secure Storage</h6>
+                        <p class="text-muted">Store your exported files in a secure location and consider encrypting sensitive financial data.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-chart-line me-2"></i>Data Analysis</h6>
+                        <p class="text-muted">Use CSV format for advanced analysis in Excel, Google Sheets, or other spreadsheet applications.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-code me-2"></i>Development Use</h6>
+                        <p class="text-muted">JSON format is perfect for developers who want to integrate the data with other applications or services.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function selectFormat(format) {
+        // Remove selected class from all options
+        document.querySelectorAll('.format-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked option
+        event.currentTarget.classList.add('selected');
+        
+        // Check the corresponding radio button
+        document.getElementById(format).checked = true;
+    }
+</script>

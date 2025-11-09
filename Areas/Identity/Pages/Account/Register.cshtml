@@ -1,0 +1,273 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    .auth-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        max-width: 900px;
+        width: 100%;
+        margin: 20px;
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .auth-header h1 {
+        color: #333;
+        font-weight: 700;
+        margin-bottom: 10px;
+        font-size: 2.5rem;
+    }
+    
+    .auth-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .form-floating {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .form-floating .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+    
+    .form-floating .form-control:focus {
+        border-color: #51cf66;
+        box-shadow: 0 0 0 0.2rem rgba(81, 207, 102, 0.25);
+        background: white;
+    }
+    
+    .form-floating label {
+        color: #666;
+        font-weight: 500;
+    }
+    
+    .btn-auth {
+        background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(81, 207, 102, 0.3);
+        color: white;
+    }
+    
+    .auth-links {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .auth-links a {
+        color: #51cf66;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    
+    .auth-links a:hover {
+        color: #40c057;
+        text-decoration: underline;
+    }
+    
+    .external-auth {
+        border-left: 2px solid #e9ecef;
+        padding-left: 30px;
+    }
+    
+    .external-auth h3 {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    
+    .btn-external {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 12px 20px;
+        color: #333;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .btn-external:hover {
+        background: #e9ecef;
+        border-color: #51cf66;
+        color: #51cf66;
+    }
+    
+    .password-requirements {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-left: 4px solid #51cf66;
+    }
+    
+    .password-requirements h6 {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .password-requirements ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #666;
+    }
+    
+    .password-requirements li {
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+    
+    @@media (max-width: 768px) {
+        .auth-card {
+            padding: 30px 20px;
+            margin: 10px;
+        }
+        
+        .external-auth {
+            border-left: none;
+            border-top: 2px solid #e9ecef;
+            padding-left: 0;
+            padding-top: 30px;
+            margin-top: 30px;
+        }
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1><i class="fas fa-user-plus me-3"></i>Join Us Today</h1>
+            <p>Create your Smart Expense Tracker account and start managing your finances</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                    
+                    <div class="form-floating">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email"><i class="fas fa-envelope me-2"></i>Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-floating">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password"><i class="fas fa-lock me-2"></i>Password</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-floating">
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label asp-for="Input.ConfirmPassword"><i class="fas fa-lock me-2"></i>Confirm Password</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="password-requirements">
+                        <h6><i class="fas fa-shield-alt me-2"></i>Password Requirements</h6>
+                        <ul>
+                            <li>At least 6 characters long</li>
+                            <li>Contains at least one uppercase letter</li>
+                            <li>Contains at least one lowercase letter</li>
+                            <li>Contains at least one number</li>
+                            <li>Contains at least one special character</li>
+                        </ul>
+                    </div>
+                    
+                    <button id="registerSubmit" type="submit" class="btn-auth">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </button>
+                    
+                    <div class="auth-links">
+                        <p>Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl"><i class="fas fa-sign-in-alt me-1"></i>Sign in here</a></p>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="col-md-6">
+                <section class="external-auth">
+                    <h3><i class="fas fa-users me-2"></i>External Registration</h3>
+                    @{
+                        if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                        {
+                            <div class="text-muted">
+                                <p><i class="fas fa-info-circle me-2"></i>No external authentication services are configured.</p>
+                                <p class="small">
+                                    See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715" target="_blank">article</a>
+                                    about setting up external authentication services.
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                <div>
+                                    @foreach (var provider in Model.ExternalLogins!)
+                                    {
+                                        <button type="submit" class="btn btn-external" name="provider" value="@provider.Name" title="Register using your @provider.DisplayName account">
+                                            <i class="fab fa-@provider.Name.ToLower() me-2"></i>@provider.DisplayName
+                                        </button>
+                                    }
+                                </div>
+                            </form>
+                        }
+                    }
+                    
+                    <div class="mt-4 p-3" style="background: #e8f5e8; border-radius: 12px; border-left: 4px solid #51cf66;">
+                        <h6 class="text-success"><i class="fas fa-check-circle me-2"></i>Why Join Us?</h6>
+                        <ul class="list-unstyled mb-0 text-muted">
+                            <li><i class="fas fa-chart-line me-2 text-success"></i>Track expenses effortlessly</li>
+                            <li><i class="fas fa-piggy-bank me-2 text-success"></i>Set and monitor budgets</li>
+                            <li><i class="fas fa-mobile-alt me-2 text-success"></i>Access from any device</li>
+                            <li><i class="fas fa-shield-alt me-2 text-success"></i>Secure and private</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

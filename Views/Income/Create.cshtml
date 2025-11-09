@@ -1,0 +1,520 @@
+@model SmartExpenseTracker.Models.Income
+
+@{
+    ViewData["Title"] = "Add New Income";
+}
+
+<style>
+    .income-hero {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(40, 167, 69, 0.3);
+    }
+
+    .form-card {
+        background: white;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+        border-bottom: 1px solid #c8e6c9;
+        padding: 2rem;
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-label i {
+        margin-right: 0.5rem;
+        color: #28a745;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+        background: white;
+        transform: translateY(-2px);
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: 2px solid #28a745;
+        color: white;
+        font-weight: 600;
+        border-radius: 12px 0 0 12px;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+        border-radius: 0 12px 12px 0;
+    }
+
+    .quick-amounts {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .quick-amount-btn {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.85rem;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .quick-amount-btn:hover {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-back {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+        color: white;
+    }
+
+    .btn-success-gradient {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+        color: white;
+    }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .required-asterisk {
+        color: #dc3545;
+        margin-left: 0.25rem;
+    }
+
+    @@keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .shake {
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @@media (max-width: 768px) {
+        .income-hero {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .form-header, .form-body {
+            padding: 1.5rem;
+        }
+
+        .quick-amounts {
+            justify-content: center;
+        }
+
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-back, .btn-success-gradient {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Hero Section -->
+    <div class="income-hero">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">
+                    <i class="fas fa-plus-circle me-3"></i>Add New Income
+                </h1>
+                <p class="mb-0 opacity-75">Record a new income entry to track your earnings</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a asp-action="Index" class="btn btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Income
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="form-card">
+                <div class="form-header">
+                    <h4 class="mb-1 fw-bold text-success">
+                        <i class="fas fa-coins me-2"></i>Income Information
+                    </h4>
+                    <p class="mb-0 text-muted">Fill in the details for your new income entry</p>
+                </div>
+                <div class="form-body">
+                    <form asp-action="Create" method="post" id="incomeForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Title" class="form-label">
+                                    <i class="fas fa-tag"></i>Income Title<span class="required-asterisk">*</span>
+                                </label>
+                                <input asp-for="Title" class="form-control" placeholder="e.g., Monthly Salary, Freelance Project" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Amount" class="form-label">
+                                    <i class="fas fa-pound-sign"></i>Amount<span class="required-asterisk">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">£</span>
+                                    <input asp-for="Amount" class="form-control" placeholder="0.00" step="0.01" id="amountInput" />
+                                </div>
+                                <div class="quick-amounts">
+                                    <button type="button" class="quick-amount-btn" data-amount="100">£100</button>
+                                    <button type="button" class="quick-amount-btn" data-amount="500">£500</button>
+                                    <button type="button" class="quick-amount-btn" data-amount="1000">£1,000</button>
+                                    <button type="button" class="quick-amount-btn" data-amount="2000">£2,000</button>
+                                    <button type="button" class="quick-amount-btn" data-amount="5000">£5,000</button>
+                                </div>
+                                <span asp-validation-for="Amount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Date" class="form-label">
+                                    <i class="fas fa-calendar"></i>Date<span class="required-asterisk">*</span>
+                                </label>
+                                <input asp-for="Date" class="form-control" type="date" />
+                                <span asp-validation-for="Date" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="CategoryId" class="form-label">
+                                    <i class="fas fa-folder"></i>Category<span class="required-asterisk">*</span>
+                                </label>
+                                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                                    <option value="">-- Select Income Category --</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label">
+                                <i class="fas fa-comment"></i>Description
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Add any additional notes or details about this income..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-back">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Income
+                            </a>
+                            <button type="submit" class="btn btn-success-gradient" id="submitBtn">
+                                <i class="fas fa-save me-2"></i>Add Income
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const dateInput = document.querySelector('input[type="date"]');
+            if (dateInput && !dateInput.value) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+            }
+
+            // Quick amount buttons
+            const quickAmountBtns = document.querySelectorAll('.quick-amount-btn');
+            const amountInput = document.getElementById('amountInput');
+
+            quickAmountBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const amount = this.getAttribute('data-amount');
+                    amountInput.value = amount;
+                    amountInput.focus();
+                    
+                    // Add visual feedback
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Form validation enhancement
+            const form = document.getElementById('incomeForm');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Create message container for frontend feedback
+            function createMessageContainer() {
+                let messageContainer = document.getElementById('frontend-messages');
+                if (!messageContainer) {
+                    messageContainer = document.createElement('div');
+                    messageContainer.id = 'frontend-messages';
+                    messageContainer.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 9999;
+                        max-width: 400px;
+                    `;
+                    document.body.appendChild(messageContainer);
+                }
+                return messageContainer;
+            }
+
+            // Show message function
+            function showMessage(message, type = 'info') {
+                const container = createMessageContainer();
+                const messageDiv = document.createElement('div');
+                
+                const bgColor = type === 'success' ? '#d4edda' : 
+                               type === 'error' ? '#f8d7da' : 
+                               type === 'warning' ? '#fff3cd' : '#d1ecf1';
+                const textColor = type === 'success' ? '#155724' : 
+                                 type === 'error' ? '#721c24' : 
+                                 type === 'warning' ? '#856404' : '#0c5460';
+                const borderColor = type === 'success' ? '#c3e6cb' : 
+                                   type === 'error' ? '#f5c6cb' : 
+                                   type === 'warning' ? '#ffeaa7' : '#bee5eb';
+
+                messageDiv.style.cssText = `
+                    background-color: ${bgColor};
+                    color: ${textColor};
+                    border: 1px solid ${borderColor};
+                    border-radius: 8px;
+                    padding: 12px 16px;
+                    margin-bottom: 10px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    animation: slideIn 0.3s ease-out;
+                    position: relative;
+                `;
+
+                messageDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                          type === 'error' ? 'fa-exclamation-circle' : 
+                                          type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}" 
+                               style="margin-right: 8px;"></i>
+                            <span>${message}</span>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: none; border: none; color: ${textColor}; cursor: pointer; font-size: 18px; padding: 0; margin-left: 10px;">
+                            ×
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(messageDiv);
+
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.remove();
+                    }
+                }, 5000);
+            }
+
+            // Add CSS animation
+            if (!document.getElementById('message-animations')) {
+                const style = document.createElement('style');
+                style.id = 'message-animations';
+                style.textContent = `
+                    @@keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Always prevent default to handle with AJAX
+                
+                const requiredFields = form.querySelectorAll('input[required], select[required]');
+                let hasErrors = false;
+                let errorMessages = [];
+
+                // Validate required fields
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('shake');
+                        hasErrors = true;
+                        const fieldName = field.getAttribute('name') || field.id || 'Field';
+                        errorMessages.push(`${fieldName} is required`);
+                        setTimeout(() => field.classList.remove('shake'), 500);
+                    }
+                });
+
+                // Validate amount
+                const amountField = form.querySelector('input[name="Amount"]');
+                if (amountField && amountField.value) {
+                    const amount = parseFloat(amountField.value);
+                    if (isNaN(amount) || amount <= 0) {
+                        hasErrors = true;
+                        errorMessages.push('Amount must be a positive number');
+                        amountField.classList.add('shake');
+                        setTimeout(() => amountField.classList.remove('shake'), 500);
+                    }
+                }
+
+                if (hasErrors) {
+                    submitBtn.classList.add('shake');
+                    setTimeout(() => submitBtn.classList.remove('shake'), 500);
+                    showMessage('Please fix the following errors: ' + errorMessages.join(', '), 'error');
+                    return;
+                }
+
+                // Show loading state
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Income...';
+                submitBtn.disabled = true;
+
+                // Prepare form data
+                const formData = new FormData(form);
+                
+                // Submit via AJAX
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    }
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                })
+                .then(html => {
+                    // Check if response contains validation errors
+                    if (html.includes('field-validation-error') || html.includes('validation-summary-errors')) {
+                        showMessage('Validation errors occurred. Please check your input.', 'error');
+                        // Parse and show specific validation errors
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const errors = tempDiv.querySelectorAll('.field-validation-error, .validation-summary-errors li');
+                        if (errors.length > 0) {
+                            const errorTexts = Array.from(errors).map(e => e.textContent.trim()).filter(t => t);
+                            if (errorTexts.length > 0) {
+                                showMessage('Errors: ' + errorTexts.join(', '), 'error');
+                            }
+                        }
+                    } else if (html.includes('Income added successfully') || response.redirected) {
+                        showMessage('Income added successfully! 🎉', 'success');
+                        // Reset form
+                        form.reset();
+                        // Redirect after showing success message
+                        setTimeout(() => {
+                            window.location.href = '/Income';
+                        }, 1500);
+                    } else {
+                        showMessage('Income created successfully!', 'success');
+                        form.reset();
+                        setTimeout(() => {
+                            window.location.href = '/Income';
+                        }, 1500);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage(`Error creating income: ${error.message}. Please check the console for more details.`, 'error');
+                })
+                .finally(() => {
+                    // Restore button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+            });
+
+            // Real-time validation feedback
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.hasAttribute('required') && !this.value.trim()) {
+                        this.style.borderColor = '#dc3545';
+                    } else {
+                        this.style.borderColor = '#28a745';
+                    }
+                });
+
+                input.addEventListener('input', function() {
+                    if (this.style.borderColor === 'rgb(220, 53, 69)' && this.value.trim()) {
+                        this.style.borderColor = '#28a745';
+                    }
+                });
+            });
+        });
+    </script>
+}

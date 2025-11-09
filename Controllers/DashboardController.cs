@@ -1,0 +1,158 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SmartExpenseTracker.Data;
+using SmartExpenseTracker.Models;
+using SmartExpenseTracker.ViewModels;
+
+namespace SmartExpenseTracker.Controllers
+{
+    [Authorize]
+    public class DashboardController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public DashboardController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var userId = _userManager.GetUserId(User);
+            var currentDate = DateTime.Now;
+            var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            // Get all-time data (consistent with Expense/Income Index pages)
+            var expenses = await _context.Expenses
+                .Include(e => e.Category)
+                .Where(e => e.UserId == userId)
+                .ToListAsync();
+
+            var income = await _context.Incomes
+                .Include(i => i.Category)
+                .Where(i => i.UserId == userId)
+                .ToListAsync();
+
+            var budgets = await _context.Budgets
+                .Include(b => b.Category)
+                .Where(b => b.UserId == userId && b.IsActive)
+                .ToListAsync();
+
+            // Calculate totals
+            var totalExpenses = expenses.Sum(e => e.Amount);
+            var totalIncome = income.Sum(i => i.Amount);
+            var totalBudget = budgets.Sum(b => b.Amount);
+            var netIncome = totalIncome - totalExpenses;
+
+            // Get recent transactions (last 10)
+            var recentExpenses = await _context.Expenses
+                .Include(e => e.Category)
+                .Where(e => e.UserId == userId)
+                .OrderByDescending(e => e.Date)
+                .Take(5)
+                .ToListAsync();
+
+            var recentIncome = await _context.Incomes
+                .Include(i => i.Category)
+                .Where(i => i.UserId == userId)
+                .OrderByDescending(i => i.Date)
+                .Take(5)
+                .ToListAsync();
+
+            // Category-wise expense breakdown
+            var expensesByCategory = expenses
+                .GroupBy(e => e.Category.Name)
+                .Select(g => new CategorySummary
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(e => e.Amount),
+                    Count = g.Count(),
+                    Color = g.First().Category.Color
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+
+            // Category-wise income breakdown
+            var incomeByCategory = income
+                .GroupBy(i => i.Category.Name)
+                .Select(g => new CategorySummary
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(i => i.Amount),
+                    Count = g.Count(),
+                    Color = g.First().Category.Color
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+
+            // Budget analysis
+            var budgetAnalysis = new List<BudgetAnalysis>();
+            foreach (var budget in budgets)
+            {
+                var budgetExpenses = expenses.Where(e => e.CategoryId == budget.CategoryId).Sum(e => e.Amount);
+                var remainingAmount = budget.Amount - budgetExpenses;
+                var percentageUsed = budget.Amount > 0 ? (budgetExpenses / budget.Amount) * 100 : 0;
+
+                budgetAnalysis.Add(new BudgetAnalysis
+                {
+                    BudgetName = budget.Name,
+                    BudgetAmount = budget.Amount,
+                    SpentAmount = budgetExpenses,
+                    RemainingAmount = remainingAmount,
+                    PercentageUsed = percentageUsed,
+                    CategoryName = budget.Category.Name,
+                    CategoryColor = budget.Category.Color,
+                    IsOverBudget = budgetExpenses > budget.Amount
+                });
+            }
+
+            // Last 6 months trend
+            var monthlyTrends = new List<MonthlyTrend>();
+            for (int i = 5; i >= 0; i--)
+            {
+                var monthStart = currentDate.AddMonths(-i).Date;
+                monthStart = new DateTime(monthStart.Year, monthStart.Month, 1);
+                var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+
+                var monthExpenses = await _context.Expenses
+                    .Where(e => e.UserId == userId && e.Date >= monthStart && e.Date <= monthEnd)
+                    .SumAsync(e => e.Amount);
+
+                var monthIncome = await _context.Incomes
+                    .Where(i => i.UserId == userId && i.Date >= monthStart && i.Date <= monthEnd)
+                    .SumAsync(i => i.Amount);
+
+                monthlyTrends.Add(new MonthlyTrend
+                {
+                    Month = monthStart.ToString("MMM yyyy"),
+                    Income = monthIncome,
+                    Expenses = monthExpenses,
+                    NetIncome = monthIncome - monthExpenses
+                });
+            }
+
+            var viewModel = new DashboardViewModel
+            {
+                TotalIncome = totalIncome,
+                TotalExpenses = totalExpenses,
+                TotalBudget = totalBudget,
+                NetIncome = netIncome,
+                SavingsRate = totalIncome > 0 ? (double)(((totalIncome - totalExpenses) / totalIncome) * 100) : 0,
+                RecentExpenses = recentExpenses,
+                RecentIncome = recentIncome,
+                ExpensesByCategory = expensesByCategory,
+                IncomeByCategory = incomeByCategory,
+                BudgetAnalysis = budgetAnalysis,
+                MonthlyTrends = monthlyTrends,
+                CurrentMonth = currentDate.ToString("MMMM yyyy")
+            };
+
+            return View(viewModel);
+        }
+    }
+}

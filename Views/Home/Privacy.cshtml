@@ -1,0 +1,690 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<style>
+    .privacy-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin: -30px -30px 2rem -30px;
+        border-radius: 0 0 30px 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .privacy-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><path d="M0,0v46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1047.71,8.15,1100,25V0H0Z"/></svg>') center/cover;
+        z-index: 1;
+    }
+
+    .privacy-hero .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    .privacy-content {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+
+    .privacy-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .privacy-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        color: #667eea;
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .section-content {
+        color: #495057;
+        line-height: 1.7;
+        font-size: 1rem;
+    }
+
+    .section-content ul {
+        padding-left: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .section-content li {
+        margin-bottom: 0.5rem;
+    }
+
+    .highlight-box {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+        border-left: 4px solid #667eea;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 1.5rem 0;
+    }
+
+    .contact-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+    }
+
+    .contact-info h4 {
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .contact-info p {
+        margin-bottom: 0.5rem;
+        opacity: 0.9;
+    }
+
+    @@media (max-width: 768px) {
+        .privacy-hero {
+            padding: 2rem 0;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .privacy-content {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="privacy-hero">
+    <div class="container text-center">
+        <h1 class="hero-title">
+            <i class="fas fa-shield-alt me-3"></i>Privacy Policy
+        </h1>
+        <p class="hero-subtitle">Your privacy and data security are our top priorities</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="privacy-content">
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                Information We Collect
+            </h2>
+            <div class="section-content">
+                <p>Smart Expense Tracker collects and processes the following types of information to provide you with our comprehensive financial management services:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Personal Information</h4>
+                <ul>
+                    <li><strong>Account Information:</strong> Email address, username, display name, and securely hashed password for account creation and authentication</li>
+                    <li><strong>Profile Data:</strong> Optional profile picture, timezone preferences, currency settings, and notification preferences</li>
+                    <li><strong>Contact Information:</strong> Email address for account recovery, security notifications, and optional service updates</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Financial Information</h4>
+                <ul>
+                    <li><strong>Transaction Data:</strong> Expense amounts, dates, descriptions, merchant names, and payment methods</li>
+                    <li><strong>Income Records:</strong> Salary information, freelance earnings, investment returns, and other income sources</li>
+                    <li><strong>Budget Information:</strong> Budget categories, spending limits, financial goals, and budget periods</li>
+                    <li><strong>Category Data:</strong> Custom expense categories, subcategories, and spending patterns</li>
+                    <li><strong>Financial Goals:</strong> Savings targets, debt reduction plans, and investment objectives</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Technical Information</h4>
+                <ul>
+                    <li><strong>Device Information:</strong> Browser type and version, operating system, screen resolution, and device identifiers</li>
+                    <li><strong>Usage Analytics:</strong> Feature usage patterns, session duration, click-through rates, and user interface interactions</li>
+                    <li><strong>Performance Data:</strong> Application load times, error logs, and system performance metrics</li>
+                    <li><strong>Network Information:</strong> IP address, geographic location (country/region level), and connection type</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Data Minimization:</strong> We only collect information that is necessary for providing our services and improving your experience. You can control what optional data you share through your account settings.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-balance-scale"></i>
+                Legal Compliance and Regulatory Framework
+            </h2>
+            <div class="section-content">
+                <p>Smart Expense Tracker is committed to compliance with all applicable privacy laws and regulations worldwide:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">General Data Protection Regulation (GDPR) - EU</h4>
+                <ul>
+                    <li><strong>Legal Basis:</strong> We process personal data based on legitimate interest, contract performance, and consent</li>
+                    <li><strong>Data Subject Rights:</strong> Full access, rectification, erasure, portability, and objection rights</li>
+                    <li><strong>Data Protection Officer:</strong> Appointed DPO available at dpo@smartexpensetracker.com</li>
+                    <li><strong>Data Processing Records:</strong> Comprehensive records maintained as required by Article 30</li>
+                    <li><strong>Privacy by Design:</strong> Privacy considerations integrated into all system development</li>
+                    <li><strong>Data Protection Impact Assessments:</strong> Conducted for high-risk processing activities</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">California Consumer Privacy Act (CCPA) - California, USA</h4>
+                <ul>
+                    <li><strong>Right to Know:</strong> Detailed information about personal information collection and use</li>
+                    <li><strong>Right to Delete:</strong> Request deletion of personal information with limited exceptions</li>
+                    <li><strong>Right to Opt-Out:</strong> Opt-out of sale of personal information (we don't sell data)</li>
+                    <li><strong>Non-Discrimination:</strong> No discrimination for exercising CCPA rights</li>
+                    <li><strong>Authorized Agents:</strong> Support for authorized agents acting on behalf of consumers</li>
+                    <li><strong>Verification Process:</strong> Secure verification procedures for identity protection</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">UK Data Protection Act 2018 (UK GDPR)</h4>
+                <ul>
+                    <li><strong>Post-Brexit Compliance:</strong> Full compliance with UK GDPR requirements</li>
+                    <li><strong>ICO Registration:</strong> Registered with the Information Commissioner's Office</li>
+                    <li><strong>UK Representative:</strong> Designated UK representative for data protection matters</li>
+                    <li><strong>Cross-Border Transfers:</strong> Adequate safeguards for data transfers outside the UK</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada</h4>
+                <ul>
+                    <li><strong>Consent Requirements:</strong> Meaningful consent for collection, use, and disclosure</li>
+                    <li><strong>Purpose Limitation:</strong> Personal information used only for stated purposes</li>
+                    <li><strong>Accuracy Obligations:</strong> Reasonable efforts to ensure information accuracy</li>
+                    <li><strong>Safeguards:</strong> Appropriate security measures for personal information protection</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Other Regional Compliance</h4>
+                <ul>
+                    <li><strong>Australia Privacy Act 1988:</strong> Australian Privacy Principles (APPs) compliance</li>
+                    <li><strong>Brazil LGPD:</strong> Lei Geral de Proteção de Dados compliance framework</li>
+                    <li><strong>Singapore PDPA:</strong> Personal Data Protection Act compliance measures</li>
+                    <li><strong>Japan APPI:</strong> Act on Protection of Personal Information compliance</li>
+                    <li><strong>India DPDP Act:</strong> Digital Personal Data Protection Act readiness</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Industry-Specific Compliance</h4>
+                <ul>
+                    <li><strong>PCI DSS:</strong> Payment Card Industry Data Security Standards for financial data</li>
+                    <li><strong>SOC 2 Type II:</strong> Service Organization Control 2 certification for security controls</li>
+                    <li><strong>ISO 27001:</strong> Information Security Management System certification</li>
+                    <li><strong>NIST Framework:</strong> National Institute of Standards and Technology cybersecurity framework</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Continuous Compliance:</strong> We regularly review and update our privacy practices to ensure ongoing compliance with evolving privacy laws and regulations worldwide. Our legal team monitors regulatory changes and implements necessary updates proactively.
+                </div>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Compliance Monitoring and Auditing</h4>
+                <ul>
+                    <li><strong>Regular Audits:</strong> Quarterly internal privacy audits and annual third-party assessments</li>
+                    <li><strong>Compliance Training:</strong> Ongoing privacy training for all employees handling personal data</li>
+                    <li><strong>Incident Response:</strong> Documented procedures for privacy incidents and breach notifications</li>
+                    <li><strong>Documentation:</strong> Comprehensive privacy documentation and policy maintenance</li>
+                </ul>
+            </div>
+        </div>
+            <h2 class="section-title">
+                <i class="fas fa-database"></i>
+                How We Use Your Information
+            </h2>
+            <div class="section-content">
+                <p>Your information is used exclusively to provide and improve our expense tracking services. We are committed to using your data responsibly and transparently:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Core Service Functionality</h4>
+                <ul>
+                    <li><strong>Transaction Processing:</strong> Record, categorize, and organize your financial transactions</li>
+                    <li><strong>Budget Management:</strong> Create, monitor, and track your budgets and spending limits</li>
+                    <li><strong>Financial Analytics:</strong> Generate personalized reports, trends, and insights about your spending habits</li>
+                    <li><strong>Data Synchronization:</strong> Ensure your financial data is consistent across all your devices</li>
+                    <li><strong>Goal Tracking:</strong> Monitor progress toward your financial objectives and savings targets</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Account Management & Security</h4>
+                <ul>
+                    <li><strong>Authentication:</strong> Verify your identity and maintain secure access to your account</li>
+                    <li><strong>Account Recovery:</strong> Help you regain access to your account if you forget your password</li>
+                    <li><strong>Security Monitoring:</strong> Detect and prevent unauthorized access or suspicious activities</li>
+                    <li><strong>Fraud Prevention:</strong> Identify and protect against potential security threats</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Service Improvement</h4>
+                <ul>
+                    <li><strong>Performance Optimization:</strong> Improve application speed, reliability, and user experience</li>
+                    <li><strong>Feature Development:</strong> Develop new features based on user needs and usage patterns</li>
+                    <li><strong>Bug Fixes:</strong> Identify and resolve technical issues and software bugs</li>
+                    <li><strong>Customer Support:</strong> Provide personalized assistance and respond to your inquiries</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Communication</h4>
+                <ul>
+                    <li><strong>Service Notifications:</strong> Send important updates about your account or the service</li>
+                    <li><strong>Security Alerts:</strong> Notify you of important security-related events</li>
+                    <li><strong>Feature Updates:</strong> Inform you about new features and improvements (optional)</li>
+                </ul>
+                
+                <div class="highlight-box">
+                    <strong>Privacy Commitment:</strong> We never sell, rent, lease, or share your personal financial data with third parties for marketing purposes. Your financial information remains private and is used solely to provide you with our services.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-share-alt"></i>
+                Third-Party Services and Data Sharing
+            </h2>
+            <div class="section-content">
+                <p>Smart Expense Tracker may integrate with limited third-party services to enhance functionality. We maintain strict controls over any data sharing:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Service Providers</h4>
+                <ul>
+                    <li><strong>Cloud Storage:</strong> Encrypted backup services for data recovery and synchronization</li>
+                    <li><strong>Analytics Services:</strong> Anonymous usage statistics to improve application performance</li>
+                    <li><strong>Security Services:</strong> Fraud detection and security monitoring tools</li>
+                    <li><strong>Email Services:</strong> Transactional emails for account notifications and password resets</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Data Sharing Limitations</h4>
+                <ul>
+                    <li><strong>No Financial Data Sharing:</strong> Your transaction details, amounts, and financial information are never shared</li>
+                    <li><strong>Anonymized Data Only:</strong> Any shared data is aggregated and anonymized to protect your identity</li>
+                    <li><strong>Contractual Protections:</strong> All service providers are bound by strict data protection agreements</li>
+                    <li><strong>Minimal Data Principle:</strong> We only share the minimum data necessary for specific functions</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Legal Disclosures</h4>
+                <p>We may disclose your information only in the following limited circumstances:</p>
+                <ul>
+                    <li>When required by law, court order, or government regulation</li>
+                    <li>To protect our rights, property, or safety, or that of our users</li>
+                    <li>In connection with a business transfer or acquisition (with user notification)</li>
+                    <li>With your explicit consent for specific purposes</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Your Control:</strong> You can opt out of non-essential third-party integrations through your account settings. Essential services (like security and core functionality) cannot be disabled but use minimal, encrypted data.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-clock"></i>
+                Data Retention and Deletion
+            </h2>
+            <div class="section-content">
+                <p>We retain your data only as long as necessary to provide our services and comply with legal obligations:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Active Account Data</h4>
+                <ul>
+                    <li><strong>Financial Records:</strong> Retained while your account is active and for 7 years after account closure for tax and legal purposes</li>
+                    <li><strong>Account Information:</strong> Maintained during active account status and 30 days after account deletion</li>
+                    <li><strong>Usage Analytics:</strong> Anonymized data retained for up to 2 years for service improvement</li>
+                    <li><strong>Security Logs:</strong> Kept for 1 year for security monitoring and fraud prevention</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Account Deletion Process</h4>
+                <ul>
+                    <li><strong>Immediate Removal:</strong> Account access is immediately disabled upon deletion request</li>
+                    <li><strong>30-Day Grace Period:</strong> Account can be recovered within 30 days of deletion request</li>
+                    <li><strong>Permanent Deletion:</strong> After 30 days, all personal data is permanently and irreversibly deleted</li>
+                    <li><strong>Backup Removal:</strong> Data is removed from all backups and archives within 90 days</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Legal Retention Requirements</h4>
+                <ul>
+                    <li>Financial transaction records may be retained longer if required by applicable tax laws</li>
+                    <li>Security incident logs may be retained for legal compliance purposes</li>
+                    <li>Anonymized analytics data may be retained indefinitely as it cannot identify individuals</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Data Export:</strong> Before deleting your account, you can export all your financial data in standard formats (CSV, JSON) for your records or to import into other applications.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-lock"></i>
+                Data Security
+            </h2>
+            <div class="section-content">
+                <p>We implement comprehensive, industry-leading security measures to protect your sensitive financial information:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Encryption & Data Protection</h4>
+                <ul>
+                    <li><strong>End-to-End Encryption:</strong> All data is encrypted using AES-256 encryption both in transit (TLS 1.3) and at rest</li>
+                    <li><strong>Database Security:</strong> Financial data is stored in encrypted databases with restricted access controls</li>
+                    <li><strong>Key Management:</strong> Encryption keys are managed using industry-standard key management systems</li>
+                    <li><strong>Data Masking:</strong> Sensitive information is masked in logs and non-production environments</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Authentication & Access Control</h4>
+                <ul>
+                    <li><strong>Secure Authentication:</strong> Multi-factor authentication (MFA) support and secure password hashing using bcrypt</li>
+                    <li><strong>Session Management:</strong> Secure session tokens with automatic expiration and renewal</li>
+                    <li><strong>Access Controls:</strong> Role-based access controls ensure only authorized personnel can access systems</li>
+                    <li><strong>Account Lockout:</strong> Automatic account protection against brute force attacks</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Infrastructure Security</h4>
+                <ul>
+                    <li><strong>Secure Hosting:</strong> Application hosted on secure, compliant cloud infrastructure</li>
+                    <li><strong>Network Security:</strong> Firewalls, intrusion detection, and DDoS protection</li>
+                    <li><strong>Regular Updates:</strong> Continuous security patches and system updates</li>
+                    <li><strong>Backup Security:</strong> Encrypted, geographically distributed backups with integrity verification</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Monitoring & Compliance</h4>
+                <ul>
+                    <li><strong>24/7 Monitoring:</strong> Continuous security monitoring and threat detection</li>
+                    <li><strong>Security Audits:</strong> Regular third-party security assessments and penetration testing</li>
+                    <li><strong>Incident Response:</strong> Comprehensive incident response plan with immediate notification procedures</li>
+                    <li><strong>Compliance Standards:</strong> Adherence to SOC 2, ISO 27001, and financial data protection standards</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Local-First Security:</strong> Your most sensitive financial data is primarily stored locally on your device, reducing exposure to network-based threats. Cloud synchronization uses zero-knowledge encryption where even we cannot access your decrypted data.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-user-shield"></i>
+                Your Rights and Control
+            </h2>
+            <div class="section-content">
+                <p>You have comprehensive control over your personal and financial data. We respect your privacy rights and provide multiple ways to manage your information:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Data Access Rights</h4>
+                <ul>
+                    <li><strong>View Your Data:</strong> Access all personal data we have stored about you through your account dashboard</li>
+                    <li><strong>Data Portability:</strong> Download your complete financial history in machine-readable formats (CSV, JSON, Excel)</li>
+                    <li><strong>Account Activity:</strong> View login history, device access, and account changes</li>
+                    <li><strong>Data Usage Reports:</strong> See how your data is being used within the application</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Data Modification Rights</h4>
+                <ul>
+                    <li><strong>Update Information:</strong> Correct or update any inaccurate personal or financial information</li>
+                    <li><strong>Edit Transactions:</strong> Modify, categorize, or delete individual expense and income records</li>
+                    <li><strong>Profile Management:</strong> Change account settings, preferences, and notification options</li>
+                    <li><strong>Category Customization:</strong> Create, modify, or delete custom expense categories</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Privacy Controls</h4>
+                <ul>
+                    <li><strong>Data Deletion:</strong> Request complete deletion of your account and all associated data</li>
+                    <li><strong>Selective Deletion:</strong> Delete specific transactions, categories, or time periods</li>
+                    <li><strong>Analytics Opt-out:</strong> Disable usage tracking and analytics collection</li>
+                    <li><strong>Communication Preferences:</strong> Control what notifications and emails you receive</li>
+                    <li><strong>Third-party Integrations:</strong> Enable or disable optional third-party service connections</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">How to Exercise Your Rights</h4>
+                <ul>
+                    <li><strong>Account Settings:</strong> Most privacy controls are available directly in your account settings</li>
+                    <li><strong>Data Export:</strong> Use the "Export Data" feature in your account to download your information</li>
+                    <li><strong>Support Requests:</strong> Contact our privacy team for complex requests or assistance</li>
+                    <li><strong>Response Time:</strong> We respond to privacy requests within 30 days (often much faster)</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>No Questions Asked:</strong> You can delete your account or export your data at any time without providing a reason. We believe your data belongs to you, and you should have complete control over it.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-globe"></i>
+                International Data Transfers and Compliance
+            </h2>
+            <div class="section-content">
+                <p>Smart Expense Tracker operates globally while maintaining the highest standards of data protection and legal compliance:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">GDPR Compliance (European Union)</h4>
+                <ul>
+                    <li><strong>Lawful Basis:</strong> We process data based on legitimate interest and user consent</li>
+                    <li><strong>Data Subject Rights:</strong> Full compliance with GDPR rights including access, rectification, erasure, and portability</li>
+                    <li><strong>Data Protection Officer:</strong> Dedicated DPO available for GDPR-related inquiries</li>
+                    <li><strong>Breach Notification:</strong> 72-hour breach notification procedures as required by GDPR</li>
+                    <li><strong>Privacy by Design:</strong> Data protection principles built into our system architecture</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">CCPA Compliance (California, USA)</h4>
+                <ul>
+                    <li><strong>Consumer Rights:</strong> Right to know, delete, and opt-out of sale of personal information</li>
+                    <li><strong>No Sale of Data:</strong> We do not sell personal information to third parties</li>
+                    <li><strong>Transparent Disclosures:</strong> Clear information about data collection and use practices</li>
+                    <li><strong>Non-Discrimination:</strong> Equal service regardless of privacy choices</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Other Regional Compliance</h4>
+                <ul>
+                    <li><strong>PIPEDA (Canada):</strong> Compliance with Canadian privacy legislation</li>
+                    <li><strong>LGPD (Brazil):</strong> Adherence to Brazilian General Data Protection Law</li>
+                    <li><strong>PDPA (Singapore):</strong> Compliance with Singapore's Personal Data Protection Act</li>
+                    <li><strong>Privacy Act (Australia):</strong> Australian Privacy Principles compliance</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Data Transfer Safeguards</h4>
+                <ul>
+                    <li><strong>Adequacy Decisions:</strong> Data transfers only to countries with adequate protection levels</li>
+                    <li><strong>Standard Contractual Clauses:</strong> EU-approved clauses for international transfers</li>
+                    <li><strong>Encryption in Transit:</strong> All international data transfers are encrypted</li>
+                    <li><strong>Local Data Residency:</strong> Option to keep data within specific geographic regions</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Regional Data Centers:</strong> We operate data centers in multiple regions to ensure your data can be stored and processed in compliance with local laws and to minimize latency.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-child"></i>
+                Children's Privacy Protection
+            </h2>
+            <div class="section-content">
+                <p>Smart Expense Tracker is committed to protecting the privacy of children and complying with children's privacy laws worldwide:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Age Restrictions</h4>
+                <ul>
+                    <li><strong>Minimum Age:</strong> Users must be at least 13 years old (16 in EU) to create an account</li>
+                    <li><strong>Age Verification:</strong> We implement age verification measures during account creation</li>
+                    <li><strong>Parental Consent:</strong> Users under 18 require parental consent in applicable jurisdictions</li>
+                    <li><strong>Educational Accounts:</strong> Special provisions for educational use with proper supervision</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">COPPA Compliance (USA)</h4>
+                <ul>
+                    <li><strong>No Collection from Children:</strong> We do not knowingly collect personal information from children under 13</li>
+                    <li><strong>Parental Rights:</strong> Parents can review, delete, or refuse further collection of their child's information</li>
+                    <li><strong>Limited Data Collection:</strong> Minimal data collection for users under 18</li>
+                    <li><strong>Safe Environment:</strong> Enhanced privacy protections for younger users</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Family Financial Education</h4>
+                <ul>
+                    <li><strong>Supervised Accounts:</strong> Parents can create supervised accounts for financial education</li>
+                    <li><strong>Privacy Controls:</strong> Enhanced privacy settings for family accounts</li>
+                    <li><strong>Educational Content:</strong> Age-appropriate financial literacy resources</li>
+                    <li><strong>Data Minimization:</strong> Reduced data collection for educational accounts</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Immediate Action:</strong> If we discover that we have collected personal information from a child under the applicable age limit, we will immediately delete that information and terminate the account.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-cookie-bite"></i>
+                Cookies and Tracking Technologies
+            </h2>
+            <div class="section-content">
+                <p>Smart Expense Tracker uses minimal cookies and tracking technologies to provide essential functionality while respecting your privacy:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Essential Cookies</h4>
+                <ul>
+                    <li><strong>Authentication Cookies:</strong> Required for secure login sessions and maintaining your logged-in state</li>
+                    <li><strong>Security Cookies:</strong> CSRF protection and session security measures</li>
+                    <li><strong>Functional Cookies:</strong> Remember your language, currency, and display preferences</li>
+                    <li><strong>Performance Cookies:</strong> Essential for application functionality and data synchronization</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Optional Analytics (Can be Disabled)</h4>
+                <ul>
+                    <li><strong>Usage Analytics:</strong> Anonymous statistics about feature usage and application performance</li>
+                    <li><strong>Error Tracking:</strong> Crash reports and error logs to improve application stability</li>
+                    <li><strong>Performance Monitoring:</strong> Page load times and application responsiveness metrics</li>
+                    <li><strong>User Experience:</strong> Anonymized interaction patterns to improve user interface design</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">What We Don't Use</h4>
+                <ul>
+                    <li><strong>No Advertising Cookies:</strong> We do not use cookies for advertising or marketing purposes</li>
+                    <li><strong>No Third-Party Trackers:</strong> No social media pixels, advertising networks, or tracking scripts</li>
+                    <li><strong>No Cross-Site Tracking:</strong> We do not track your activity across other websites</li>
+                    <li><strong>No Behavioral Profiling:</strong> We do not create detailed behavioral profiles for marketing</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Cookie Management</h4>
+                <ul>
+                    <li><strong>Browser Controls:</strong> You can disable cookies through your browser settings</li>
+                    <li><strong>Granular Control:</strong> Choose which optional cookies to accept in your account settings</li>
+                    <li><strong>Cookie Expiration:</strong> Most cookies expire automatically after 30 days of inactivity</li>
+                    <li><strong>Clear Data:</strong> Option to clear all cookies and local storage from your account</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Cookie-Free Option:</strong> You can use Smart Expense Tracker with only essential cookies enabled. Optional analytics and tracking can be completely disabled without affecting core functionality.
+                </div>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-sync-alt"></i>
+                Policy Updates and Notifications
+            </h2>
+            <div class="section-content">
+                <p>We are committed to keeping you informed about any changes to our privacy practices:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Update Process</h4>
+                <ul>
+                    <li><strong>Advance Notice:</strong> We provide at least 30 days notice before implementing significant privacy policy changes</li>
+                    <li><strong>Clear Communication:</strong> Updates are written in plain language with summaries of key changes</li>
+                    <li><strong>Version Control:</strong> Each policy version is dated and archived for reference</li>
+                    <li><strong>Change Highlights:</strong> Major changes are clearly marked and explained in detail</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Notification Methods</h4>
+                <ul>
+                    <li><strong>Email Notifications:</strong> Direct email to your registered address for significant changes</li>
+                    <li><strong>In-App Notifications:</strong> Prominent notices within the application interface</li>
+                    <li><strong>Website Banner:</strong> Temporary banner on our website announcing policy updates</li>
+                    <li><strong>Account Dashboard:</strong> Dedicated section in your account showing recent policy changes</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Your Options After Updates</h4>
+                <ul>
+                    <li><strong>Review Period:</strong> 30-day period to review changes before they take effect</li>
+                    <li><strong>Opt-Out Options:</strong> Ability to disable new features that affect privacy</li>
+                    <li><strong>Account Closure:</strong> Right to close your account if you disagree with changes</li>
+                    <li><strong>Data Export:</strong> Full data export available before account closure</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Types of Changes</h4>
+                <ul>
+                    <li><strong>Minor Updates:</strong> Clarifications, contact information, or legal references</li>
+                    <li><strong>Feature Updates:</strong> New features that may affect data collection or usage</li>
+                    <li><strong>Legal Updates:</strong> Changes due to new regulations or legal requirements</li>
+                    <li><strong>Security Updates:</strong> Enhanced security measures or data protection improvements</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>No Surprise Changes:</strong> We will never make retroactive changes to how we handle your existing data without your explicit consent. New policies only apply to data collected after the effective date.
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Last Updated:</strong> January 2025</p>
+                <p><strong>Effective Date:</strong> January 1, 2025</p>
+                <p><strong>Next Review:</strong> July 2025</p>
+            </div>
+        </div>
+
+        <div class="privacy-section">
+            <h2 class="section-title">
+                <i class="fas fa-envelope"></i>
+                Contact Us About Privacy
+            </h2>
+            <div class="section-content">
+                <p>We are committed to addressing your privacy concerns and questions promptly and transparently:</p>
+                
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Privacy Contact Methods</h4>
+                <ul>
+                    <li><strong>Privacy Email:</strong> privacy@smartexpensetracker.com (dedicated privacy team)</li>
+                    <li><strong>Data Protection Officer:</strong> dpo@smartexpensetracker.com (for GDPR-related inquiries)</li>
+                    <li><strong>General Support:</strong> support@smartexpensetracker.com (general privacy questions)</li>
+                    <li><strong>Security Issues:</strong> security@smartexpensetracker.com (data breaches or security concerns)</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Response Times</h4>
+                <ul>
+                    <li><strong>Privacy Inquiries:</strong> Response within 48 hours, resolution within 7 business days</li>
+                    <li><strong>Data Access Requests:</strong> Fulfilled within 30 days as required by law</li>
+                    <li><strong>Data Deletion Requests:</strong> Processed within 72 hours for immediate deletion</li>
+                    <li><strong>Security Incidents:</strong> Immediate acknowledgment, full response within 24 hours</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">What to Include in Your Privacy Request</h4>
+                <ul>
+                    <li><strong>Account Information:</strong> Your registered email address or account ID</li>
+                    <li><strong>Specific Request:</strong> Clear description of what you need (access, deletion, correction, etc.)</li>
+                    <li><strong>Verification:</strong> We may request additional verification for security purposes</li>
+                    <li><strong>Preferred Response:</strong> How you'd like to receive our response (email, secure portal, etc.)</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Regulatory Contacts</h4>
+                <ul>
+                    <li><strong>EU Users:</strong> You have the right to lodge complaints with your local Data Protection Authority</li>
+                    <li><strong>California Users:</strong> Contact the California Attorney General's Office for CCPA-related issues</li>
+                    <li><strong>UK Users:</strong> Information Commissioner's Office (ICO) for UK GDPR matters</li>
+                    <li><strong>Other Regions:</strong> We'll help you identify the appropriate regulatory contact</li>
+                </ul>
+
+                <div class="highlight-box" style="margin-top: 2rem;">
+                    <strong>Secure Communication:</strong> For sensitive privacy matters, we offer encrypted email communication and secure document transfer. Contact us to set up secure channels for your privacy inquiries.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
