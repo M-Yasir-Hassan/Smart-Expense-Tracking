@@ -578,21 +578,21 @@
             <div class="col-md-4 mb-3">
                 <div class="stat-card total-budget">
                     <i class="fas fa-wallet stat-icon" style="color: #2196f3;"></i>
-                    <div class="stat-value" style="color: #2196f3;">£@(ViewBag.TotalBudget?.ToString("N2") ?? "0.00")</div>
+                    <div class="stat-value" style="color: #2196f3;">$@(ViewBag.TotalBudget?.ToString("N2") ?? "0.00")</div>
                     <div class="stat-label">Total Budget</div>
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <div class="stat-card total-spent">
                     <i class="fas fa-credit-card stat-icon" style="color: #ff9800;"></i>
-                    <div class="stat-value" style="color: #ff9800;">£@(ViewBag.TotalSpent?.ToString("N2") ?? "0.00")</div>
+                    <div class="stat-value" style="color: #ff9800;">$@(ViewBag.TotalSpent?.ToString("N2") ?? "0.00")</div>
                     <div class="stat-label">Total Spent</div>
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <div class="stat-card remaining">
                     <i class="fas fa-piggy-bank stat-icon" style="color: #4caf50;"></i>
-                    <div class="stat-value" style="color: #4caf50;">£@(((ViewBag.TotalBudget ?? 0) - (ViewBag.TotalSpent ?? 0)).ToString("N2"))</div>
+                    <div class="stat-value" style="color: #4caf50;">$@(((ViewBag.TotalBudget ?? 0) - (ViewBag.TotalSpent ?? 0)).ToString("N2"))</div>
                     <div class="stat-label">Remaining</div>
                 </div>
             </div>
@@ -640,7 +640,7 @@
                         <!-- Amount Display -->
                         <div class="budget-amount-display">
                             <div class="budget-amount">
-                                <i class="fas fa-pound-sign"></i>@budget.Amount.ToString("N0")
+                                <i class="fas fa-dollar-sign"></i>@budget.Amount.ToString("N0")
                             </div>
                             <div class="budget-amount-label">Budget Limit</div>
                         </div>
@@ -661,15 +661,15 @@
                         <!-- Budget Statistics -->
                         <div class="budget-stats">
                             <div class="budget-stat budget-amount-stat">
-                                <div class="budget-stat-value">£@budget.Amount.ToString("N0")</div>
+                                <div class="budget-stat-value">$@budget.Amount.ToString("N0")</div>
                                 <div class="budget-stat-label">Budget</div>
                             </div>
                             <div class="budget-stat spent-amount-stat">
-                                <div class="budget-stat-value">£@budget.SpentAmount.ToString("N0")</div>
+                                <div class="budget-stat-value">$@budget.SpentAmount.ToString("N0")</div>
                                 <div class="budget-stat-label">Spent</div>
                             </div>
                             <div class="budget-stat remaining-amount-stat">
-                                <div class="budget-stat-value">£@budget.RemainingAmount.ToString("N0")</div>
+                                <div class="budget-stat-value">$@budget.RemainingAmount.ToString("N0")</div>
                                 <div class="budget-stat-label">Remaining</div>
                             </div>
                         </div>

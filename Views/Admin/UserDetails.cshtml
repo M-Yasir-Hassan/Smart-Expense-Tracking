@@ -1,0 +1,392 @@
+@model SmartExpenseTracker.ViewModels.UserDetailsViewModel
+@{
+    ViewData["Title"] = "User Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-user me-2"></i>User Details
+        </h1>
+        <div>
+            <a asp-action="Users" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Users
+            </a>
+            <a asp-action="EditUser" asp-route-id="@Model.User.Id" class="btn btn-primary">
+                <i class="fas fa-edit me-1"></i>Edit User
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- User Information -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-user me-2"></i>User Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        @if (!string.IsNullOrEmpty(Model.User.ProfilePictureUrl))
+                        {
+                            <img src="@Model.User.ProfilePictureUrl" class="rounded-circle mb-3" width="80" height="80" alt="Profile">
+                        }
+                        else
+                        {
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                <span class="text-white fw-bold h4 mb-0">@Model.User.FirstName.Substring(0, 1)@Model.User.LastName.Substring(0, 1)</span>
+                            </div>
+                        }
+                        <h5 class="mb-1">@Model.User.FullName</h5>
+                        <p class="text-muted">@Model.User.Email</p>
+                    </div>
+
+                    <table class="table table-sm table-borderless">
+                        <tr>
+                            <td><strong>Registration Date:</strong></td>
+                            <td>@Model.User.RegistrationDate.ToString("MMM dd, yyyy")</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Status:</strong></td>
+                            <td>
+                                @if (Model.User.IsApproved)
+                                {
+                                    <span class="badge bg-success">Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Pending</span>
+                                }
+                                @if (Model.User.IsActive)
+                                {
+                                    <span class="badge bg-info">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+                        </tr>
+                        @if (Model.User.ApprovedDate.HasValue)
+                        {
+                            <tr>
+                                <td><strong>Approved Date:</strong></td>
+                                <td>@Model.User.ApprovedDate.Value.ToString("MMM dd, yyyy")</td>
+                            </tr>
+                        }
+                        @if (Model.User.LastLoginDate.HasValue)
+                        {
+                            <tr>
+                                <td><strong>Last Login:</strong></td>
+                                <td>@Model.User.LastLoginDate.Value.ToString("MMM dd, yyyy HH:mm")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><strong>Roles:</strong></td>
+                            <td>
+                                @if (Model.Roles.Any())
+                                {
+                                    @foreach (var role in Model.Roles)
+                                    {
+                                        <span class="badge bg-primary me-1">@role</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No roles assigned</span>
+                                }
+                            </td>
+                        </tr>
+                        @if (!string.IsNullOrEmpty(Model.User.Notes))
+                        {
+                            <tr>
+                                <td><strong>Notes:</strong></td>
+                                <td>@Model.User.Notes</td>
+                            </tr>
+                        }
+                    </table>
+
+                    <div class="mt-3">
+                        @if (!Model.User.IsApproved)
+                        {
+                            <button type="button" class="btn btn-success btn-sm me-2" onclick="approveUser('@Model.User.Id')">
+                                <i class="fas fa-check me-1"></i>Approve User
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-warning btn-sm me-2" onclick="rejectUser('@Model.User.Id')">
+                                <i class="fas fa-times me-1"></i>Revoke Approval
+                            </button>
+                        }
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser('@Model.User.Id', '@Model.User.FullName')">
+                            <i class="fas fa-trash me-1"></i>Delete User
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-bar me-2"></i>Financial Statistics
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-danger h-100">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                Total Expenses
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Statistics.TotalExpenseAmount.ToString("C")</div>
+                                            <div class="text-xs text-muted">@Model.Statistics.TotalExpenses transactions</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-credit-card fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-success h-100">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Total Income
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Statistics.TotalIncomeAmount.ToString("C")</div>
+                                            <div class="text-xs text-muted">@Model.Statistics.TotalIncome transactions</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-warning h-100">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Current Month Expenses
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Statistics.CurrentMonthExpenses.ToString("C")</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-info h-100">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                Current Month Income
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Statistics.CurrentMonthIncome.ToString("C")</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4 text-center">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h4 class="mb-0">@Model.Statistics.TotalBudgets</h4>
+                                    <small>Total Budgets</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h4 class="mb-0">@((Model.Statistics.TotalIncomeAmount - Model.Statistics.TotalExpenseAmount).ToString("C"))</h4>
+                                    <small>Net Balance</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h4 class="mb-0">@((Model.Statistics.CurrentMonthIncome - Model.Statistics.CurrentMonthExpenses).ToString("C"))</h4>
+                                    <small>This Month Net</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-history me-2"></i>Recent Activities
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentActivities.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var activity in Model.RecentActivities)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (activity.Type == "Expense")
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="fas fa-credit-card me-1"></i>Expense
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-dollar-sign me-1"></i>Income
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td>@activity.Description</td>
+                                            <td class="@(activity.Type == "Expense" ? "text-danger" : "text-success")">
+                                                @activity.Amount.ToString("C")
+                                            </td>
+                                            <td>@activity.Date.ToString("MMM dd, yyyy")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No recent activities</h5>
+                            <p class="text-muted">This user hasn't recorded any financial activities yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function approveUser(userId) {
+            if (confirm('Are you sure you want to approve this user?')) {
+                fetch(`/Admin/ApproveUser`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    },
+                    body: JSON.stringify(userId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while approving the user.');
+                });
+            }
+        }
+
+        function rejectUser(userId) {
+            if (confirm('Are you sure you want to revoke approval for this user?')) {
+                fetch(`/Admin/RejectUser`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    },
+                    body: JSON.stringify(userId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while revoking user approval.');
+                });
+            }
+        }
+
+        function deleteUser(userId, userName) {
+            if (confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone and will delete all their data.`)) {
+                fetch(`/Admin/DeleteUser`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    },
+                    body: JSON.stringify(userId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('User deleted successfully');
+                        window.location.href = '/Admin/Users';
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the user.');
+                });
+            }
+        }
+    </script>
+}

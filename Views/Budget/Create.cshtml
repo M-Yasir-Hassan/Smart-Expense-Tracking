@@ -396,18 +396,18 @@
                                 
                                 <div class="col-md-6 mb-3">
                                     <label asp-for="Amount" class="form-label">
-<i class="fas fa-pound-sign" style="color: #28a745;"></i>Budget Amount <span class="text-danger">*</span>
+                                        <i class="fas fa-dollar-sign" style="color: #28a745;"></i>Budget Amount <span class="text-danger">*</span>
                                     </label>
                                     <div class="input-group">
-<span class="input-group-text">£</span>
+                                        <span class="input-group-text">$</span>
                                         <input asp-for="Amount" class="form-control" placeholder="0.00" step="0.01" id="amountInput" />
                                     </div>
                                     <div class="quick-amounts">
-<button type="button" class="quick-amount-btn" data-amount="100">£100</button>
-<button type="button" class="quick-amount-btn" data-amount="250">£250</button>
-<button type="button" class="quick-amount-btn" data-amount="500">£500</button>
-<button type="button" class="quick-amount-btn" data-amount="1000">£1,000</button>
-<button type="button" class="quick-amount-btn" data-amount="2000">£2,000</button>
+                                        <button type="button" class="quick-amount-btn" data-amount="100">$100</button>
+                                        <button type="button" class="quick-amount-btn" data-amount="250">$250</button>
+                                        <button type="button" class="quick-amount-btn" data-amount="500">$500</button>
+                                        <button type="button" class="quick-amount-btn" data-amount="1000">$1,000</button>
+                                        <button type="button" class="quick-amount-btn" data-amount="2000">$2,000</button>
                                     </div>
                                     <span asp-validation-for="Amount" class="validation-error">
                                     </span>

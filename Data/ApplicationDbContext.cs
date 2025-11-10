@@ -4,7 +4,7 @@ using SmartExpenseTracker.Models;
 
 namespace SmartExpenseTracker.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -72,13 +72,50 @@ public class ApplicationDbContext : IdentityDbContext
             .HasIndex(np => np.UserId)
             .IsUnique();
 
+        // Configure ApplicationUser relationships
+        modelBuilder.Entity<ApplicationUser>()
+            .HasOne(u => u.ApprovedBy)
+            .WithMany()
+            .HasForeignKey(u => u.ApprovedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.Expenses)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.Incomes)
+            .WithOne(i => i.User)
+            .HasForeignKey(i => i.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.Budgets)
+            .WithOne(b => b.User)
+            .HasForeignKey(b => b.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.Notifications)
+            .WithOne()
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasOne(u => u.NotificationPreference)
+            .WithOne()
+            .HasForeignKey<NotificationPreference>(np => np.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         // Seed default categories
         modelBuilder.Entity<Category>().HasData(
             new Category { Id = 1, Name = "Food & Dining", Description = "Restaurants, groceries, and food delivery", Color = "#FF6B6B", Icon = "fas fa-utensils", CreatedDate = new DateTime(2024, 1, 1) },
             new Category { Id = 2, Name = "Transportation", Description = "Gas, public transport, car maintenance", Color = "#4ECDC4", Icon = "fas fa-car", CreatedDate = new DateTime(2024, 1, 1) },
             new Category { Id = 3, Name = "Shopping", Description = "Clothing, electronics, and general shopping", Color = "#45B7D1", Icon = "fas fa-shopping-bag", CreatedDate = new DateTime(2024, 1, 1) },
             new Category { Id = 4, Name = "Entertainment", Description = "Movies, games, and recreational activities", Color = "#96CEB4", Icon = "fas fa-gamepad", CreatedDate = new DateTime(2024, 1, 1) },
-            new Category { Id = 5, Name = "Bills & Utilities", Description = "Electricity, water, internet, phone bills", Color = "#FFEAA7", Icon = "fas fa-file-invoice", CreatedDate = new DateTime(2024, 1, 1) },
+            new Category { Id = 5, Name = "Bills & Utilities", Description = "Electricity, water, internet, phone bills", Color = "#FFEAA7", Icon = "fas fa-file-invoice-dollar", CreatedDate = new DateTime(2024, 1, 1) },
             new Category { Id = 6, Name = "Healthcare", Description = "Medical expenses, pharmacy, insurance", Color = "#DDA0DD", Icon = "fas fa-heartbeat", CreatedDate = new DateTime(2024, 1, 1) },
             new Category { Id = 7, Name = "Education", Description = "Books, courses, tuition fees", Color = "#98D8C8", Icon = "fas fa-graduation-cap", CreatedDate = new DateTime(2024, 1, 1) },
             new Category { Id = 8, Name = "Salary", Description = "Monthly salary and wages", Color = "#6C5CE7", Icon = "fas fa-money-bill-wave", CreatedDate = new DateTime(2024, 1, 1) },

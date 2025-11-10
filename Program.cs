@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SmartExpenseTracker.Data;
+using SmartExpenseTracker.Models;
 using SmartExpenseTracker.Services;
 using System.Globalization;
-using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure culture for USD currency
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -13,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
     options.SignIn.RequireConfirmedAccount = false; // Disable email confirmation for development
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
@@ -21,6 +26,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Register notification service
@@ -43,17 +49,6 @@ else
 }
 
 app.UseHttpsRedirection();
-// Set default culture to en-GB and enable request localization
-var supportedCultures = new[] { new CultureInfo("en-GB") };
-var localizationOptions = new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture("en-GB"),
-    SupportedCultures = supportedCultures,
-    SupportedUICultures = supportedCultures
-};
-CultureInfo.DefaultThreadCurrentCulture = supportedCultures[0];
-CultureInfo.DefaultThreadCurrentUICulture = supportedCultures[0];
-app.UseRequestLocalization(localizationOptions);
 app.UseRouting();
 
 app.UseAuthentication();
@@ -75,23 +70,14 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         
         // Ensure database is created
         context.Database.EnsureCreated();
-
-        // One-time data fix: replace dollar-specific category icons with neutral/pound-friendly icons
-        var invoiceDollarIcons = context.Categories
-            .Where(c => c.Icon == "fas fa-file-invoice-dollar")
-            .ToList();
-        if (invoiceDollarIcons.Count > 0)
-        {
-            foreach (var category in invoiceDollarIcons)
-            {
-                category.Icon = "fas fa-file-invoice";
-            }
-            await context.SaveChangesAsync();
-        }
+        
+        // Seed roles and admin user
+        await SeedRolesAndAdminAsync(userManager, roleManager);
         
         // Seed sample data
         await SampleDataSeeder.SeedSampleDataAsync(context, userManager);
@@ -99,3 +85,47 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
+// Method to seed roles and admin user
+static async Task SeedRolesAndAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+{
+    // Create roles if they don't exist
+    string[] roleNames = { "Admin", "User" };
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+
+    // Create admin user if it doesn't exist
+    var adminEmail = "admin@smartexpensetracker.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    
+    if (adminUser == null)
+    {
+        adminUser = new ApplicationUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            FirstName = "System",
+            LastName = "Administrator",
+            EmailConfirmed = true,
+            IsApproved = true,
+            IsActive = true,
+            ApprovedDate = DateTime.UtcNow,
+            RegistrationDate = DateTime.UtcNow
+        };
+
+        var result = await userManager.CreateAsync(adminUser, "Admin123!");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+    else if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+    {
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+}

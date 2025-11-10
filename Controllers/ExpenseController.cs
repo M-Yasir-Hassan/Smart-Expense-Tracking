@@ -13,10 +13,10 @@ namespace SmartExpenseTracker.Controllers
     public class ExpenseController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly INotificationService _notificationService;
 
-        public ExpenseController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService)
+        public ExpenseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;

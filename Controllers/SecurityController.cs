@@ -12,9 +12,9 @@ namespace SmartExpenseTracker.Controllers
     public class SecurityController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SecurityController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public SecurityController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -36,6 +36,7 @@ namespace SmartExpenseTracker.Controllers
             var viewModel = new SecurityViewModel
             {
                 UserEmail = user?.Email ?? "Unknown",
+                UserName = user?.UserName ?? "Unknown",
                 AccountCreatedDate = accountCreated,
                 TotalExpenses = totalExpenses,
                 TotalIncome = totalIncome,
@@ -46,6 +47,70 @@ namespace SmartExpenseTracker.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new EditProfileViewModel
+            {
+                UserName = user.UserName ?? "",
+                CurrentEmail = user.Email ?? ""
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Check if username is already taken by another user
+            var existingUser = await _userManager.FindByNameAsync(model.UserName);
+            if (existingUser != null && existingUser.Id != userId)
+            {
+                ModelState.AddModelError("UserName", "This username is already taken.");
+                return View(model);
+            }
+
+            // Update username
+            user.UserName = model.UserName;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Your profile has been updated successfully.";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View(model);
+            }
         }
 
         [HttpGet]

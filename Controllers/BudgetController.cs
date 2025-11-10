@@ -12,10 +12,10 @@ namespace SmartExpenseTracker.Controllers
     public class BudgetController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<BudgetController> _logger;
 
-        public BudgetController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ILogger<BudgetController> logger)
+        public BudgetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<BudgetController> logger)
         {
             _context = context;
             _userManager = userManager;

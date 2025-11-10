@@ -36,6 +36,6 @@ namespace SmartExpenseTracker.Models
         public virtual Category? Category { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual IdentityUser? User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
     }
 }

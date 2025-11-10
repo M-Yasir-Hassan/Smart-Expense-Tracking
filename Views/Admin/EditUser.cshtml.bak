@@ -1,0 +1,244 @@
+@model SmartExpenseTracker.ViewModels.EditUserViewModel
+@{
+    ViewData["Title"] = "Edit User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-user-edit me-2"></i>Edit User
+        </h1>
+        <div>
+            <a asp-action="UserDetails" asp-route-id="@Model.Id" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Details
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-edit me-2"></i>User Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditUser" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="FirstName" class="form-label">First Name</label>
+                                    <input asp-for="FirstName" class="form-control" placeholder="Enter first name">
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="LastName" class="form-label">Last Name</label>
+                                    <input asp-for="LastName" class="form-control" placeholder="Enter last name">
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter email address">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="IsApproved" class="form-check-input" type="checkbox">
+                                        <label asp-for="IsApproved" class="form-check-label">
+                                            User Approved
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">Check to approve this user for login access.</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="IsActive" class="form-check-input" type="checkbox">
+                                        <label asp-for="IsActive" class="form-check-label">
+                                            User Active
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">Uncheck to temporarily disable this user.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">User Roles</label>
+                            <div class="row">
+                                @for (int i = 0; i < Model.AvailableRoles.Count; i++)
+                                {
+                                    var role = Model.AvailableRoles[i];
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" 
+                                                   name="SelectedRoles" value="@role" 
+                                                   id="role_@i" />
+                                            <label class="form-check-label" for="role_@i">
+                                                @role
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <small class="form-text text-muted">Select the roles to assign to this user.</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Notes" class="form-label">Admin Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" 
+                                      placeholder="Add any notes about this user..."></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                            <small class="form-text text-muted">Internal notes visible only to administrators.</small>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-between">
+                            <div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Save Changes
+                                </button>
+                                <a asp-action="UserDetails" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>Cancel
+                                </a>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-danger" id="deleteUserBtn">
+                                    <i class="fas fa-trash me-1"></i>Delete User
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>Confirm User Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Warning:</strong> This action cannot be undone!</p>
+                <p>Deleting this user will:</p>
+                <ul>
+                    <li>Permanently remove their account</li>
+                    <li>Delete all their financial data (expenses, income, budgets)</li>
+                    <li>Remove all associated notifications and preferences</li>
+                </ul>
+                <p>Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-1"></i>Yes, Delete User
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        // Delete user functionality
+        document.getElementById('deleteUserBtn').addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+            modal.show();
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            const userId = '@Model.Id';
+            
+            const formData = new FormData();
+            formData.append('id', userId);
+            
+            // Add anti-forgery token
+            const token = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (token) {
+                formData.append('__RequestVerificationToken', token.value);
+            }
+
+            fetch('@Url.Action("DeleteUser", "Admin")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to users list
+                    window.location.href = '@Url.Action("Users", "Admin")';
+                } else {
+                    alert('Error: ' + data.message);
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteUserModal'));
+                    modal.hide();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the user.');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteUserModal'));
+                modal.hide();
+            });
+        });
+
+        // Set checkbox states based on selected roles
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedRoles = @Html.Raw(Json.Serialize(Model.SelectedRoles));
+            const availableRoles = @Html.Raw(Json.Serialize(Model.AvailableRoles));
+            
+            availableRoles.forEach((role, index) => {
+                const checkbox = document.getElementById('role_' + index);
+                if (checkbox && selectedRoles.includes(role)) {
+                    checkbox.checked = true;
+                }
+            });
+        });
+
+        // Form validation enhancement
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const firstName = document.getElementById('FirstName').value.trim();
+            const lastName = document.getElementById('LastName').value.trim();
+            const email = document.getElementById('Email').value.trim();
+
+            if (!firstName || !lastName || !email) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return false;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('Please enter a valid email address.');
+                return false;
+            }
+        });
+    </script>
+}
+
+@{
+    // Add anti-forgery token for AJAX requests
+    Html.AntiForgeryToken();
+}

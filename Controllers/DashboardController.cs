@@ -12,9 +12,9 @@ namespace SmartExpenseTracker.Controllers
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DashboardController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public DashboardController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -90,6 +90,100 @@ namespace SmartExpenseTracker.Controllers
                 .OrderByDescending(c => c.Amount)
                 .ToList();
 
+            // Time period calculations
+            var thisMonthStart = new DateTime(currentDate.Year, currentDate.Month, 1);
+            var thisMonthEnd = thisMonthStart.AddMonths(1).AddDays(-1);
+            
+            var lastMonthStart = thisMonthStart.AddMonths(-1);
+            var lastMonthEnd = thisMonthStart.AddDays(-1);
+            
+            var threeMonthsStart = thisMonthStart.AddMonths(-2);
+            var threeMonthsEnd = thisMonthEnd;
+
+            // This Month data
+            var thisMonthExpenses = expenses.Where(e => e.Date >= thisMonthStart && e.Date <= thisMonthEnd).ToList();
+            var thisMonthIncome = income.Where(i => i.Date >= thisMonthStart && i.Date <= thisMonthEnd).ToList();
+
+            var thisMonthExpensesByCategory = thisMonthExpenses
+                .GroupBy(e => e.Category.Name)
+                .Select(g => new CategorySummary
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(e => e.Amount),
+                    Count = g.Count(),
+                    Color = g.First().Category.Color
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+
+            var thisMonthIncomeByCategory = thisMonthIncome
+                .GroupBy(i => i.Category.Name)
+                .Select(g => new CategorySummary
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(i => i.Amount),
+                    Count = g.Count(),
+                    Color = g.First().Category.Color
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+
+            // Last Month data
+            var lastMonthExpenses = expenses.Where(e => e.Date >= lastMonthStart && e.Date <= lastMonthEnd).ToList();
+            var lastMonthIncomeData = income.Where(i => i.Date >= lastMonthStart && i.Date <= lastMonthEnd).ToList();
+
+            var lastMonthExpensesByCategory = lastMonthExpenses
+                .GroupBy(e => e.Category.Name)
+                .Select(g => new CategorySummary
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(e => e.Amount),
+                    Count = g.Count(),
+                    Color = g.First().Category.Color
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+
+            var lastMonthIncomeByCategory = lastMonthIncomeData
+                .GroupBy(i => i.Category.Name)
+                .Select(g => new CategorySummary
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(i => i.Amount),
+                    Count = g.Count(),
+                    Color = g.First().Category.Color
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+
+            // Three Months data
+            var threeMonthsExpenses = expenses.Where(e => e.Date >= threeMonthsStart && e.Date <= threeMonthsEnd).ToList();
+            var threeMonthsIncomeData = income.Where(i => i.Date >= threeMonthsStart && i.Date <= threeMonthsEnd).ToList();
+
+            var threeMonthsExpensesByCategory = threeMonthsExpenses
+                .GroupBy(e => e.Category.Name)
+                .Select(g => new CategorySummary
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(e => e.Amount),
+                    Count = g.Count(),
+                    Color = g.First().Category.Color
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+
+            var threeMonthsIncomeByCategory = threeMonthsIncomeData
+                .GroupBy(i => i.Category.Name)
+                .Select(g => new CategorySummary
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(i => i.Amount),
+                    Count = g.Count(),
+                    Color = g.First().Category.Color
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+
             // Budget analysis
             var budgetAnalysis = new List<BudgetAnalysis>();
             foreach (var budget in budgets)
@@ -136,6 +230,63 @@ namespace SmartExpenseTracker.Controllers
                 });
             }
 
+            // Calculate current month totals
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
+            var previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+            var previousYear = currentMonth == 1 ? currentYear - 1 : currentYear;
+
+            var currentMonthIncome = income
+                .Where(i => i.Date.Month == currentMonth && i.Date.Year == currentYear)
+                .Sum(i => i.Amount);
+
+            var currentMonthExpenses = expenses
+                .Where(e => e.Date.Month == currentMonth && e.Date.Year == currentYear)
+                .Sum(e => e.Amount);
+
+            var previousMonthIncome = income
+                .Where(i => i.Date.Month == previousMonth && i.Date.Year == previousYear)
+                .Sum(i => i.Amount);
+
+            var previousMonthExpenses = expenses
+                .Where(e => e.Date.Month == previousMonth && e.Date.Year == previousYear)
+                .Sum(e => e.Amount);
+
+            var currentMonthNetIncome = currentMonthIncome - currentMonthExpenses;
+            var previousMonthNetIncome = previousMonthIncome - previousMonthExpenses;
+
+            // Calculate percentage changes
+            double incomeChangePercentage = 0;
+            double expenseChangePercentage = 0;
+            double netIncomeChangePercentage = 0;
+
+            if (previousMonthIncome > 0)
+            {
+                incomeChangePercentage = (double)((currentMonthIncome - previousMonthIncome) / previousMonthIncome * 100);
+            }
+            else if (currentMonthIncome > 0)
+            {
+                incomeChangePercentage = 100; // 100% increase from 0
+            }
+
+            if (previousMonthExpenses > 0)
+            {
+                expenseChangePercentage = (double)((currentMonthExpenses - previousMonthExpenses) / previousMonthExpenses * 100);
+            }
+            else if (currentMonthExpenses > 0)
+            {
+                expenseChangePercentage = 100; // 100% increase from 0
+            }
+
+            if (previousMonthNetIncome != 0)
+            {
+                netIncomeChangePercentage = (double)((currentMonthNetIncome - previousMonthNetIncome) / Math.Abs(previousMonthNetIncome) * 100);
+            }
+            else if (currentMonthNetIncome != 0)
+            {
+                netIncomeChangePercentage = currentMonthNetIncome > 0 ? 100 : -100;
+            }
+
             var viewModel = new DashboardViewModel
             {
                 TotalIncome = totalIncome,
@@ -149,7 +300,25 @@ namespace SmartExpenseTracker.Controllers
                 IncomeByCategory = incomeByCategory,
                 BudgetAnalysis = budgetAnalysis,
                 MonthlyTrends = monthlyTrends,
-                CurrentMonth = currentDate.ToString("MMMM yyyy")
+                CurrentMonth = currentDate.ToString("MMMM yyyy"),
+                
+                // Time period specific data
+                ThisMonthExpensesByCategory = thisMonthExpensesByCategory,
+                LastMonthExpensesByCategory = lastMonthExpensesByCategory,
+                ThreeMonthsExpensesByCategory = threeMonthsExpensesByCategory,
+                ThisMonthIncomeByCategory = thisMonthIncomeByCategory,
+                LastMonthIncomeByCategory = lastMonthIncomeByCategory,
+                ThreeMonthsIncomeByCategory = threeMonthsIncomeByCategory,
+                
+                // Previous month data
+                PreviousMonthIncome = previousMonthIncome,
+                PreviousMonthExpenses = previousMonthExpenses,
+                PreviousMonthNetIncome = previousMonthNetIncome,
+                
+                // Percentage changes
+                IncomeChangePercentage = incomeChangePercentage,
+                ExpenseChangePercentage = expenseChangePercentage,
+                NetIncomeChangePercentage = netIncomeChangePercentage
             };
 
             return View(viewModel);

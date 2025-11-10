@@ -14,17 +14,20 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SmartExpenseTracker.Models;
 
 namespace SmartExpenseTracker.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -109,11 +112,32 @@ namespace SmartExpenseTracker.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                // Check if user exists and is approved before attempting login
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user != null && !user.IsApproved)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account is pending approval. Please contact an administrator.");
+                    return Page();
+                }
+                
+                if (user != null && !user.IsActive)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account has been deactivated. Please contact an administrator.");
+                    return Page();
+                }
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    // Update last login date
+                    if (user != null)
+                    {
+                        user.LastLoginDate = DateTime.UtcNow;
+                        await _userManager.UpdateAsync(user);
+                    }
+                    
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

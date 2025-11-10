@@ -285,9 +285,9 @@
                         <div class="col-md-6">
                             <div class="detail-item">
                                 <div class="detail-label">
-                                    <i class="fas fa-pound-sign"></i>Amount
+                                    <i class="fas fa-dollar-sign"></i>Amount
                                 </div>
-                                <p class="detail-value amount-value">@Model.Amount.ToString("C")</p>
+                                <p class="detail-value amount-value">$@Model.Amount.ToString("N2")</p>
                             </div>
                         </div>
                     </div>
@@ -346,7 +346,7 @@
 <script>
     // Add confirmation dialog with enhanced styling
     document.querySelector('.btn-danger-gradient').addEventListener('click', function(e) {
-if (!confirm('⚠️ FINAL WARNING ⚠️\n\nThis will permanently delete the expense:\n"' + '@Model.Title' + '"\nAmount: @Model.Amount.ToString("C")\n\nThis action CANNOT be undone!\n\nAre you absolutely sure?')) {
+        if (!confirm('⚠️ FINAL WARNING ⚠️\n\nThis will permanently delete the expense:\n"' + '@Model.Title' + '"\nAmount: $@Model.Amount.ToString("N2")\n\nThis action CANNOT be undone!\n\nAre you absolutely sure?')) {
             e.preventDefault();
         }
     });

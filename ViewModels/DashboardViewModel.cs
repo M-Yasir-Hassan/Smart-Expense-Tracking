@@ -11,11 +11,62 @@ namespace SmartExpenseTracker.ViewModels
         public double SavingsRate { get; set; }
         public string CurrentMonth { get; set; } = string.Empty;
         
+        // Previous month data for comparison
+        public decimal PreviousMonthIncome { get; set; }
+        public decimal PreviousMonthExpenses { get; set; }
+        public decimal PreviousMonthNetIncome { get; set; }
+        
+        // Percentage changes
+        public double IncomeChangePercentage { get; set; }
+        public double ExpenseChangePercentage { get; set; }
+        public double NetIncomeChangePercentage { get; set; }
+        
+        // Helper properties for display
+        public string IncomeChangeText => GetChangeText(IncomeChangePercentage);
+        public string ExpenseChangeText => GetChangeText(ExpenseChangePercentage);
+        public string NetIncomeChangeText => GetNetIncomeChangeText();
+        
+        private string GetChangeText(double percentage)
+        {
+            if (percentage == 0) return "No change from last month";
+            var sign = percentage > 0 ? "+" : "";
+            return $"{sign}{percentage:F1}% from last month";
+        }
+        
+        private string GetNetIncomeChangeText()
+        {
+            if (NetIncome >= 0 && PreviousMonthNetIncome >= 0)
+            {
+                return NetIncomeChangePercentage == 0 ? "Same as last month" : GetChangeText(NetIncomeChangePercentage);
+            }
+            else if (NetIncome >= 0 && PreviousMonthNetIncome < 0)
+            {
+                return "Improved from loss last month";
+            }
+            else if (NetIncome < 0 && PreviousMonthNetIncome >= 0)
+            {
+                return "Declined from profit last month";
+            }
+            else
+            {
+                return NetIncomeChangePercentage == 0 ? "Same loss as last month" : GetChangeText(NetIncomeChangePercentage);
+            }
+        }
+        
         public List<Expense> RecentExpenses { get; set; } = new List<Expense>();
         public List<Income> RecentIncome { get; set; } = new List<Income>();
         
         public List<CategorySummary> ExpensesByCategory { get; set; } = new List<CategorySummary>();
         public List<CategorySummary> IncomeByCategory { get; set; } = new List<CategorySummary>();
+        
+        // Time period specific data
+        public List<CategorySummary> ThisMonthExpensesByCategory { get; set; } = new List<CategorySummary>();
+        public List<CategorySummary> LastMonthExpensesByCategory { get; set; } = new List<CategorySummary>();
+        public List<CategorySummary> ThreeMonthsExpensesByCategory { get; set; } = new List<CategorySummary>();
+        
+        public List<CategorySummary> ThisMonthIncomeByCategory { get; set; } = new List<CategorySummary>();
+        public List<CategorySummary> LastMonthIncomeByCategory { get; set; } = new List<CategorySummary>();
+        public List<CategorySummary> ThreeMonthsIncomeByCategory { get; set; } = new List<CategorySummary>();
         
         public List<BudgetAnalysis> BudgetAnalysis { get; set; } = new List<BudgetAnalysis>();
         public List<MonthlyTrend> MonthlyTrends { get; set; } = new List<MonthlyTrend>();

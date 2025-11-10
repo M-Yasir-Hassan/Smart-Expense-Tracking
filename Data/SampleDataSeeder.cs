@@ -5,7 +5,7 @@ namespace SmartExpenseTracker.Data
 {
     public static class SampleDataSeeder
     {
-        public static async Task SeedSampleDataAsync(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public static async Task SeedSampleDataAsync(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             // Check if sample data already exists
             if (context.Expenses.Any() || context.Incomes.Any() || context.Budgets.Any())
@@ -13,36 +13,24 @@ namespace SmartExpenseTracker.Data
                 return; // Sample data already exists
             }
 
-            // Create sample categories
-            var categories = new[]
-            {
-                new Category { Name = "Food & Dining", Description = "Restaurants, groceries, and food expenses", Color = "#FF6B6B", Icon = "fas fa-utensils" },
-                new Category { Name = "Transportation", Description = "Gas, public transport, and vehicle expenses", Color = "#4ECDC4", Icon = "fas fa-car" },
-                new Category { Name = "Shopping", Description = "Clothing, electronics, and general shopping", Color = "#45B7D1", Icon = "fas fa-shopping-bag" },
-                new Category { Name = "Entertainment", Description = "Movies, games, and entertainment expenses", Color = "#96CEB4", Icon = "fas fa-gamepad" },
-                new Category { Name = "Bills & Utilities", Description = "Electricity, water, internet, and other bills", Color = "#FFEAA7", Icon = "fas fa-file-invoice" },
-                new Category { Name = "Healthcare", Description = "Medical expenses and health-related costs", Color = "#DDA0DD", Icon = "fas fa-heartbeat" },
-                new Category { Name = "Education", Description = "Books, courses, and educational expenses", Color = "#98D8C8", Icon = "fas fa-graduation-cap" },
-                new Category { Name = "Travel", Description = "Vacation and travel-related expenses", Color = "#F7DC6F", Icon = "fas fa-plane" },
-                new Category { Name = "Salary", Description = "Monthly salary and wages", Color = "#82E0AA", Icon = "fas fa-money-bill-wave" },
-                new Category { Name = "Freelance", Description = "Freelance work and contract income", Color = "#85C1E9", Icon = "fas fa-laptop" },
-                new Category { Name = "Investment", Description = "Returns from investments and dividends", Color = "#F8C471", Icon = "fas fa-chart-line" },
-                new Category { Name = "Business", Description = "Business income and profits", Color = "#D7BDE2", Icon = "fas fa-briefcase" },
-                new Category { Name = "Other Income", Description = "Miscellaneous income sources", Color = "#A9DFBF", Icon = "fas fa-plus-circle" }
-            };
-
-            context.Categories.AddRange(categories);
-            await context.SaveChangesAsync();
+            // Get existing categories from the database (seeded by ApplicationDbContext)
+            var categories = context.Categories.ToArray();
 
             // Get the first user (or create a demo user)
             var user = await userManager.FindByEmailAsync("demo@smartexpensetracker.com");
             if (user == null)
             {
-                user = new IdentityUser
+                user = new ApplicationUser
                 {
                     UserName = "demo@smartexpensetracker.com",
                     Email = "demo@smartexpensetracker.com",
-                    EmailConfirmed = true
+                    FirstName = "Demo",
+                    LastName = "User",
+                    EmailConfirmed = true,
+                    IsApproved = true,
+                    IsActive = true,
+                    ApprovedDate = DateTime.UtcNow,
+                    RegistrationDate = DateTime.UtcNow
                 };
                 await userManager.CreateAsync(user, "Demo123!");
             }

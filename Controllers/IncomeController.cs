@@ -12,9 +12,9 @@ namespace SmartExpenseTracker.Controllers
     public class IncomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public IncomeController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public IncomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;

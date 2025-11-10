@@ -10,9 +10,9 @@ namespace SmartExpenseTracker.Controllers
     public class NotificationController : Controller
     {
         private readonly INotificationService _notificationService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public NotificationController(INotificationService notificationService, UserManager<IdentityUser> userManager)
+        public NotificationController(INotificationService notificationService, UserManager<ApplicationUser> userManager)
         {
             _notificationService = notificationService;
             _userManager = userManager;

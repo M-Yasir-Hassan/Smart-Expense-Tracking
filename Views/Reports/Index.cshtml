@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <!-- Header -->
     <div class="text-center mb-4">
-        <img src="https://img.icons8.com/color/64/000000/analytics.png" alt="Analytics" class="mb-3">
+        <img src="~/images/analytics.svg" alt="Analytics" class="mb-3" width="64" height="64">
         <h2 class="text-primary mb-2">Financial Reports & Analytics</h2>
         <p class="text-muted">Comprehensive insights into your financial performance for @Model.CurrentMonth</p>
     </div>
@@ -17,7 +17,7 @@
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card summary-card border-0 shadow-sm h-100" style="border-radius: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                 <div class="card-body text-white text-center p-4">
-                    <img src="https://img.icons8.com/color/48/ffffff/money-bag.png" alt="Income" class="mb-3">
+                    <img src="~/images/money-bag.svg" alt="Income" class="mb-3" width="48" height="48">
                     <h3 class="mb-2">@Model.TotalIncome.ToString("C")</h3>
                     <p class="mb-0 opacity-75">Total Income</p>
                 </div>
@@ -27,7 +27,7 @@
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card summary-card border-0 shadow-sm h-100" style="border-radius: 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);">
                 <div class="card-body text-white text-center p-4">
-                    <img src="https://img.icons8.com/color/48/ffffff/spending.png" alt="Expenses" class="mb-3">
+                    <img src="~/images/spending.svg" alt="Expenses" class="mb-3" width="48" height="48">
                     <h3 class="mb-2">@Model.TotalExpenses.ToString("C")</h3>
                     <p class="mb-0 opacity-75">Total Expenses</p>
                 </div>
@@ -37,7 +37,7 @@
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card summary-card border-0 shadow-sm h-100" style="border-radius: 20px; background: linear-gradient(135deg, @(Model.NetIncome >= 0 ? "#51cf66, #40c057" : "#ff6b6b, #ee5a52") 100%);">
                 <div class="card-body text-white text-center p-4">
-                    <img src="https://img.icons8.com/color/48/ffffff/@(Model.NetIncome >= 0 ? "profit" : "loss").png" alt="Net Income" class="mb-3">
+                    <img src="~/images/@(Model.NetIncome >= 0 ? "profit" : "loss").svg" alt="Net Income" class="mb-3" width="48" height="48">
                     <h3 class="mb-2">@Model.NetIncome.ToString("C")</h3>
                     <p class="mb-0 opacity-75">Net Income</p>
                 </div>
@@ -47,7 +47,7 @@
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card summary-card border-0 shadow-sm h-100" style="border-radius: 20px; background: linear-gradient(135deg, #ffd93d 0%, #ff6b35 100%);">
                 <div class="card-body text-white text-center p-4">
-                    <img src="https://img.icons8.com/color/48/ffffff/savings.png" alt="Savings Rate" class="mb-3">
+                    <img src="~/images/savings.svg" alt="Savings Rate" class="mb-3" width="48" height="48">
                     <h3 class="mb-2">@Model.SavingsRate.ToString("F1")%</h3>
                     <p class="mb-0 opacity-75">Savings Rate</p>
                 </div>
@@ -88,7 +88,7 @@
                     else
                     {
                         <div class="text-center py-5">
-                            <img src="https://img.icons8.com/color/64/000000/no-data.png" alt="No Data" class="mb-3">
+                            <img src="~/images/no-data.svg" alt="No Data" class="mb-3" width="64" height="64">
                             <p class="text-muted">No expense data available for this period</p>
                         </div>
                     }
@@ -127,7 +127,7 @@
                     else
                     {
                         <div class="text-center py-5">
-                            <img src="https://img.icons8.com/color/64/000000/no-data.png" alt="No Data" class="mb-3">
+                            <img src="~/images/no-data.svg" alt="No Data" class="mb-3" width="64" height="64">
                             <p class="text-muted">No income data available for this period</p>
                         </div>
                     }
@@ -320,7 +320,7 @@
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return '£' + value.toLocaleString();
+                                return '$' + value.toLocaleString();
                             }
                         }
                     }

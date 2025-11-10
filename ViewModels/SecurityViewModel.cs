@@ -5,6 +5,7 @@ namespace SmartExpenseTracker.ViewModels
     public class SecurityViewModel
     {
         public string UserEmail { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
         public DateTime AccountCreatedDate { get; set; }
         public DateTime LastLoginDate { get; set; }
         public int TotalExpenses { get; set; }
@@ -12,6 +13,17 @@ namespace SmartExpenseTracker.ViewModels
         public int TotalBudgets { get; set; }
         public bool TwoFactorEnabled { get; set; }
         public bool EmailConfirmed { get; set; }
+    }
+
+    public class EditProfileViewModel
+    {
+        [Required]
+        [Display(Name = "Username")]
+        [StringLength(50, ErrorMessage = "Username cannot be longer than 50 characters.")]
+        public string UserName { get; set; } = string.Empty;
+
+        [Display(Name = "Current Email")]
+        public string CurrentEmail { get; set; } = string.Empty;
     }
 
     public class ExportDataViewModel

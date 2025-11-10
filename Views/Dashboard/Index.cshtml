@@ -1,4 +1,7 @@
 @model SmartExpenseTracker.ViewModels.DashboardViewModel
+@using Microsoft.AspNetCore.Identity
+@using SmartExpenseTracker.Models
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -380,8 +383,7 @@
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <h1 class="hero-title">
-                    <i class="fas fa-chart-line me-3"></i>
-                    Welcome back, @User.Identity.Name!
+                    Welcome back, @(UserManager.GetUserAsync(User).Result?.UserName ?? User.Identity.Name)!
                 </h1>
                 <p class="hero-subtitle">Here's your financial overview for @Model.CurrentMonth</p>
                 
@@ -403,7 +405,6 @@
             </div>
             <div class="col-lg-4 text-center">
                 <div class="hero-image">
-                    <i class="fas fa-chart-pie"></i>
                 </div>
             </div>
         </div>
@@ -420,11 +421,11 @@
                 <p class="mb-0">
                     @if (Model.NetIncome >= 0)
                     {
-<span class="text-success fw-bold">Great job! You're saving £@Model.NetIncome.ToString("N2") this month.</span>
+                        <span class="text-success fw-bold">Great job! You're saving $@Model.NetIncome.ToString("N2") this month.</span>
                     }
                     else
                     {
-<span class="text-warning fw-bold">You're spending £@Math.Abs(Model.NetIncome).ToString("N2") more than you earn this month.</span>
+                        <span class="text-warning fw-bold">You're spending $@Math.Abs(Model.NetIncome).ToString("N2") more than you earn this month.</span>
                     }
                     Your savings rate is <strong>@Model.SavingsRate.ToString("F1")%</strong>.
                 </p>
@@ -443,7 +444,7 @@
                 <div class="stat-label">Total Income</div>
                 <div class="stat-change positive">
                     <i class="fas fa-arrow-up"></i>
-                    +12.5% from last month
+                    @Model.IncomeChangeText
                 </div>
             </div>
         </div>
@@ -457,7 +458,7 @@
                 <div class="stat-label">Total Expenses</div>
                 <div class="stat-change negative">
                     <i class="fas fa-arrow-down"></i>
-                    +5.2% from last month
+                    @Model.ExpenseChangeText
                 </div>
             </div>
         </div>
@@ -471,7 +472,7 @@
                 <div class="stat-label">Net Income</div>
                 <div class="stat-change @(Model.NetIncome >= 0 ? "positive" : "negative")">
                     <i class="fas fa-@(Model.NetIncome >= 0 ? "arrow-up" : "arrow-down")"></i>
-                    @(Model.NetIncome >= 0 ? "Profit" : "Loss") this month
+                    @Model.NetIncomeChangeText
                 </div>
             </div>
         </div>
@@ -669,18 +670,56 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Expense Chart
-    @if (Model.ExpensesByCategory.Any())
-    {
-        <text>
+    // Data for different time periods
+    const expenseData = {
+        'This Month': {
+            labels: [@Html.Raw(string.Join(",", Model.ThisMonthExpensesByCategory.Select(c => $"'{c.CategoryName}'")))],
+            data: [@string.Join(",", Model.ThisMonthExpensesByCategory.Select(c => c.Amount))],
+            colors: [@Html.Raw(string.Join(",", Model.ThisMonthExpensesByCategory.Select(c => $"'{c.Color}'")))]
+        },
+        'Last Month': {
+            labels: [@Html.Raw(string.Join(",", Model.LastMonthExpensesByCategory.Select(c => $"'{c.CategoryName}'")))],
+            data: [@string.Join(",", Model.LastMonthExpensesByCategory.Select(c => c.Amount))],
+            colors: [@Html.Raw(string.Join(",", Model.LastMonthExpensesByCategory.Select(c => $"'{c.Color}'")))]
+        },
+        '3 Months': {
+            labels: [@Html.Raw(string.Join(",", Model.ThreeMonthsExpensesByCategory.Select(c => $"'{c.CategoryName}'")))],
+            data: [@string.Join(",", Model.ThreeMonthsExpensesByCategory.Select(c => c.Amount))],
+            colors: [@Html.Raw(string.Join(",", Model.ThreeMonthsExpensesByCategory.Select(c => $"'{c.Color}'")))]
+        }
+    };
+
+    const incomeData = {
+        'This Month': {
+            labels: [@Html.Raw(string.Join(",", Model.ThisMonthIncomeByCategory.Select(c => $"'{c.CategoryName}'")))],
+            data: [@string.Join(",", Model.ThisMonthIncomeByCategory.Select(c => c.Amount))],
+            colors: [@Html.Raw(string.Join(",", Model.ThisMonthIncomeByCategory.Select(c => $"'{c.Color}'")))]
+        },
+        'Last Month': {
+            labels: [@Html.Raw(string.Join(",", Model.LastMonthIncomeByCategory.Select(c => $"'{c.CategoryName}'")))],
+            data: [@string.Join(",", Model.LastMonthIncomeByCategory.Select(c => c.Amount))],
+            colors: [@Html.Raw(string.Join(",", Model.LastMonthIncomeByCategory.Select(c => $"'{c.Color}'")))]
+        },
+        '3 Months': {
+            labels: [@Html.Raw(string.Join(",", Model.ThreeMonthsIncomeByCategory.Select(c => $"'{c.CategoryName}'")))],
+            data: [@string.Join(",", Model.ThreeMonthsIncomeByCategory.Select(c => c.Amount))],
+            colors: [@Html.Raw(string.Join(",", Model.ThreeMonthsIncomeByCategory.Select(c => $"'{c.Color}'")))]
+        }
+    };
+
+    let expenseChart, incomeChart;
+
+    // Initialize charts
+    function initializeCharts() {
+        // Expense Chart
         const expenseCtx = document.getElementById('expenseChart').getContext('2d');
-        const expenseChart = new Chart(expenseCtx, {
+        expenseChart = new Chart(expenseCtx, {
             type: 'doughnut',
             data: {
-                labels: [@Html.Raw(string.Join(",", Model.ExpensesByCategory.Select(c => $"'{c.CategoryName}'")))],
+                labels: expenseData['This Month'].labels,
                 datasets: [{
-                    data: [@string.Join(",", Model.ExpensesByCategory.Select(c => c.Amount))],
-                    backgroundColor: [@Html.Raw(string.Join(",", Model.ExpensesByCategory.Select(c => $"'{c.Color}'")))],
+                    data: expenseData['This Month'].data,
+                    backgroundColor: expenseData['This Month'].colors,
                     borderWidth: 0,
                     hoverBorderWidth: 3,
                     hoverBorderColor: '#fff'
@@ -704,46 +743,53 @@
                 cutout: '60%'
             }
         });
-        </text>
+
+        // Income Chart
+        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        incomeChart = new Chart(incomeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: incomeData['This Month'].labels,
+                datasets: [{
+                    data: incomeData['This Month'].data,
+                    backgroundColor: incomeData['This Month'].colors,
+                    borderWidth: 0,
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
     }
 
-    // Income Chart
-    @if (Model.IncomeByCategory.Any())
-    {
-        <text>
-        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
-        const incomeChart = new Chart(incomeCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [@Html.Raw(string.Join(",", Model.IncomeByCategory.Select(c => $"'{c.CategoryName}'")))],
-                datasets: [{
-                    data: [@string.Join(",", Model.IncomeByCategory.Select(c => c.Amount))],
-                    backgroundColor: [@Html.Raw(string.Join(",", Model.IncomeByCategory.Select(c => $"'{c.Color}'")))],
-                    borderWidth: 0,
-                    hoverBorderWidth: 3,
-                    hoverBorderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    }
-                },
-                cutout: '60%'
-            }
-        });
-        </text>
+    // Update chart data
+    function updateChart(chart, newData) {
+        chart.data.labels = newData.labels;
+        chart.data.datasets[0].data = newData.data;
+        chart.data.datasets[0].backgroundColor = newData.colors;
+        chart.update();
     }
+
+    // Initialize charts when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCharts();
+    });
 
     // Trend Chart
     @if (Model.MonthlyTrends.Any())
@@ -800,7 +846,7 @@
                         },
                         ticks: {
                             callback: function(value) {
-    return '£' + value.toLocaleString();
+                                return '$' + value.toLocaleString();
                             }
                         }
                     },
@@ -824,6 +870,21 @@
             });
             // Add active class to clicked button
             this.classList.add('active');
+            
+            // Get the selected period
+            const selectedPeriod = this.textContent;
+            
+            // Find the chart container to determine which chart to update
+            const chartContainer = this.closest('.chart-card');
+            const expenseChartContainer = chartContainer.querySelector('#expenseChart');
+            const incomeChartContainer = chartContainer.querySelector('#incomeChart');
+            
+            // Update the appropriate chart
+            if (expenseChartContainer && expenseChart) {
+                updateChart(expenseChart, expenseData[selectedPeriod]);
+            } else if (incomeChartContainer && incomeChart) {
+                updateChart(incomeChart, incomeData[selectedPeriod]);
+            }
         });
     });
 </script>
